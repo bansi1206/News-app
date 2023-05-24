@@ -1,0 +1,34 @@
+.post {
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.post__title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.post__metadata {
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.post__category {
+    margin-right: 10px;
+}
+
+.post__timestamp {
+    margin-right: 10px;
+}
+
+.post__author {
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.post__content {
+    line-height: 1.5;
+}
