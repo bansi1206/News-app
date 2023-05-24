@@ -34,9 +34,11 @@ async function authenticate(username, password) {
     try {
         // Kết nối tới cơ sở dữ liệu MongoDB
         await client.connect();
+        console.log("Connected to MongoDB")
 
-        const collection = client.db('news').collection('user'); // Thay đổi thành tên collection của bạn
+        const collection = client.db('News').collection('user'); // Thay đổi thành tên collection của bạn
         const user = await collection.findOne({ username });
+        console.log(user)
 
         if (user) {
             if (user.password === password) {

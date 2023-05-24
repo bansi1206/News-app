@@ -22,9 +22,11 @@ const Login = () => {
 
         // Xử lý kết quả từ backend
         const data = await response.json();
+        console.log('Response from backend:', data);
+
 
         // Kiểm tra kết quả xác thực từ backend
-        if (data.success) {
+        if (response.ok) {
             // Xử lý khi đăng nhập thành công (chuyển đến trang chính)
             console.log('Đăng nhập thành công!');
             router.push('/');
