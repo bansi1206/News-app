@@ -6,8 +6,6 @@ const PostDetail = () => {
     const [post, setPost] = useState(null);
 
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get('postId');
 
         const fetchPost = async () => {
             try {
