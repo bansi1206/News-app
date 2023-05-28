@@ -12,7 +12,10 @@ const Header = () => {
         <header className="header">
             <div className="header__top">
                 <p className="header__date">{formattedDate}</p>
-                <a href='/login' className="header__login">Login</a>
+                <div className='header__top__right'>
+                    <div>Search</div>
+                    <a href='/login' className="header__login">Login</a>
+                </div>
             </div>
             <nav className="navbar">
                 <div className="container">

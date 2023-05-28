@@ -15,6 +15,12 @@
     margin-bottom: 10px;
 }
 
+.header__top__right {
+    display: flex;
+    justify-content: space-between;
+    width: 100px;
+}
+
 .header__date {
     font-size: 14px;
     color: #333;
