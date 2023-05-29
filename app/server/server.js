@@ -26,6 +26,7 @@ app.post('/login', async (req, res) => {
 app.get('/post/:id', async (req, res) => {
     const postId = req.params.id;
 
+
     try {
         const post = await getPostById(postId);
         res.json(post);

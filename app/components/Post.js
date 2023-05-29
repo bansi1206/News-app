@@ -28,7 +28,7 @@ const Post = () => {
         <div>
             {posts.map((post) => (
                 <div className="post" key={post._id}>
-                    <Link href={`/${post._id}`}>
+                    <Link href={`/postDetail/${post._id}`}>
                         <h2 className="post__title">{post.title}</h2>
                     </Link>
                     <p className="post__metadata">

@@ -1,12 +1,10 @@
 'use client'
-// pages/index.js
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const PostDetail = () => {
-    const router = useRouter();
-    const { postId } = router.query;
+const PostDetail = ({ params }) => {
+    const { postId } = params;
+    console.log(postId)
     const [post, setPost] = useState(null);
 
     useEffect(() => {
