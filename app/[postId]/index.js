@@ -1,12 +1,15 @@
 'use client'
+// pages/index.js
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const PostDetail = () => {
+    const router = useRouter();
+    const { postId } = router.query;
     const [post, setPost] = useState(null);
 
     useEffect(() => {
-
         const fetchPost = async () => {
             try {
                 const response = await axios.get(`http://localhost:3001/post/${postId}`);
@@ -20,7 +23,7 @@ const PostDetail = () => {
         if (postId) {
             fetchPost();
         }
-    }, []);
+    }, [postId]);
 
     if (!post) {
         return <div>Loading...</div>;
