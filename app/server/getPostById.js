@@ -17,8 +17,6 @@ async function getPostById(postId) {
     } catch (error) {
         console.log('Error fetching post:', error);
         throw error;
-    } finally {
-        client.close();
     }
 }
 

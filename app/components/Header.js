@@ -1,6 +1,7 @@
 import '../styles/header.css'
 import React from 'react';
 import Link from 'next/link';
+import Menu from './Menu';
 const Header = () => {
     const currentDate = new Date();
     const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
@@ -29,7 +30,7 @@ const Header = () => {
                             </Link>
                         </li>
                         <li className="navbar__menu-item">
-                            <Link href="/categories">
+                            <Link href="/">
                                 Categories
                             </Link>
                         </li>
@@ -41,6 +42,7 @@ const Header = () => {
                     </ul>
                 </div>
             </nav>
+            <Menu />
         </header>
     );
 };

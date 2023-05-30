@@ -1,4 +1,5 @@
 const { client } = require('./db');
+const { ObjectId } = require('mongodb');
 
 async function getPosts() {
     try {
@@ -6,18 +7,23 @@ async function getPosts() {
         console.log('Connected to MongoDB');
 
         const db = client.db('News'); // Thay đổi tên database của bạn
-        const collection = db.collection('post'); // Thay đổi tên collection của bạn
+        const postCollection = db.collection('post'); // Thay đổi tên collection của bạn
+        const menuItemCollection = db.collection('menu item'); // Thay đổi tên collection của bạn
 
-        const posts = await collection.find().toArray();
+        const posts = await postCollection.find().toArray();
 
-        console.log(posts)
+        // Lấy thông tin menu item và gắn vào từng bài viết
+        for (const post of posts) {
+            const menuItem = await menuItemCollection.findOne({ _id: new ObjectId(post.menu_item_id) });
+            if (menuItem) {
+                post.menu = menuItem.title;
+            }
+        }
 
         return posts;
     } catch (error) {
         console.log('Error fetching posts:', error);
         throw error;
-    } finally {
-        await client.close();
     }
 }
 

@@ -3,6 +3,8 @@ const { authenticate } = require('./auth');
 const cors = require('cors');
 const { getPosts } = require('./getPost');
 const { getPostById } = require('./getPostById');
+const { getMenuData } = require('./getMenuData');
+const { getPostByMenu } = require('./getPostByMenu');
 
 // Sử dụng middleware cors
 
@@ -46,6 +48,34 @@ app.get('/post', async (req, res) => {
         res.status(500).json({ error: 'An error occurred' });
     }
 });
+
+app.get('/menu', async (req, res) => {
+    try {
+        const menuData = await getMenuData();
+        res.json(menuData);
+    } catch (error) {
+        console.log('Error fetching menu data:', error);
+        res.status(500).json({ error: 'Error fetching menu data' });
+    }
+});
+
+
+
+app.get('/postByMenu/:menuItemId', async (req, res) => {
+    const menuItemId = req.params.menuItemId;
+
+    try {
+        const posts = await getPosts();
+        const filteredPosts = await getPostByMenu(posts, menuItemId);
+
+        res.status(200).json(filteredPosts);
+    } catch (error) {
+        console.log('Error fetching posts by menu item:', error);
+        res.status(500).json({ error: 'An error occurred' });
+    }
+});
+
+
 
 
 
