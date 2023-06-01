@@ -22,7 +22,7 @@ const postByMenu = ({ params }) => {
     }, [menuItemId]);
 
     if (posts.length === 0) {
-        return <div>No posts found</div>;
+        return <div>Loading...</div>;
     }
 
     return (

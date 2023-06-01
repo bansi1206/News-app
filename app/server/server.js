@@ -75,6 +75,36 @@ app.get('/postByMenu/:menuItemId', async (req, res) => {
     }
 });
 
+app.get("/searchPosts", async (req, res) => {
+    const { searchValue, selectedMenus } = req.query;
+
+    try {
+        const posts = await getPosts();
+        let filteredPosts = posts;
+
+        // Tìm kiếm theo tên
+        if (searchValue) {
+            const searchTerm = searchValue.toLowerCase();
+            filteredPosts = filteredPosts.filter(
+                (post) =>
+                    post.title.toLowerCase().includes(searchTerm) ||
+                    post.content.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        // Lọc theo menu đã chọn
+        if (selectedMenus && selectedMenus.length > 0) {
+            filteredPosts = filteredPosts.filter((post) => {
+                return selectedMenus.includes(post.menu_id) || selectedMenus.includes(post.menu_item_id);
+            });
+        }
+
+        res.status(200).json(filteredPosts);
+    } catch (error) {
+        console.log("Error searching posts:", error);
+        res.status(500).json({ error: "An error occurred" });
+    }
+});
 
 
 
