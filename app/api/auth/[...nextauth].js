@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
-import { authenticate } from './auth';
+const { authenticate } = require('./auth');
 
 const options = {
     providers: [

@@ -1,4 +1,4 @@
-const { client } = require('./db');
+const { client } = require('../../server/db');
 
 // Kiểm tra tên người dùng và mật khẩu
 async function authenticate(username, password) {

@@ -13,7 +13,7 @@ async function authenticate(username, password) {
 
         if (user) {
             if (user.password === password) {
-                return { success: true, user: { id: user.id, name: user.name } };
+                return { success: true, user: { id: user._id, name: user.name } };
             } else {
                 return { success: false, message: 'Incorrect password' };
             }
