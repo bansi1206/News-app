@@ -1,4 +1,5 @@
 const { client } = require('./db');
+const { ObjectId } = require('mongodb');
 
 // Kiểm tra tên người dùng và mật khẩu
 async function authenticate(username, password) {
@@ -27,4 +28,17 @@ async function authenticate(username, password) {
     }
 }
 
-module.exports = { authenticate };
+async function getUserById(userId) {
+    try {
+        await client.connect();
+        const collection = client.db('News').collection('user');
+        const user = await collection.findOne({ _id: new ObjectId(userId) });
+        return user;
+    } catch (error) {
+        console.log('Error fetching user by id:', error);
+        throw new Error('Error fetching user by id');
+    }
+}
+
+module.exports = { authenticate, getUserById };
+

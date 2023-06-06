@@ -11,7 +11,7 @@ const Login = () => {
     useEffect(() => {
         const userId = localStorage.getItem('user_id');
         if (userId) {
-            router.push('/profile');
+            router.push('/login');
         }
     }, []);
 
@@ -39,7 +39,7 @@ const Login = () => {
 
             // Lưu trữ ID người dùng trong localStorage
             localStorage.setItem('user_id', id);
-            router.push('/profile');
+            router.push('/');
         } else {
             // Xử lý khi đăng nhập thất bại
             console.log('Đăng nhập thất bại!');

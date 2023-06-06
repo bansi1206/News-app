@@ -1,10 +1,11 @@
 const express = require('express');
-const { authenticate } = require('./auth');
+const { authenticate, getUserById } = require('./auth');
 const cors = require('cors');
 const { getPosts } = require('./getPost');
 const { getPostById } = require('./getPostById');
 const { getMenuData } = require('./getMenuData');
 const { getPostByMenu } = require('./getPostByMenu');
+
 
 
 
@@ -32,6 +33,18 @@ app.post('/login', async (req, res) => {
         res.status(401).json({ message: result.message });
     }
 });
+
+app.get('/api/user/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await getUserById(id);
+        res.status(200).json(user);
+    } catch (error) {
+        console.log('Error fetching user:', error);
+        res.status(500).json({ message: 'Error fetching user' });
+    }
+});
+
 
 
 app.get('/post/:id', async (req, res) => {
