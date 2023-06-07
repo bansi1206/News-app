@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Comment from '@/app/components/Comment';
+import CommentSection from '@/app/components/Comment';
 
 const PostDetail = ({ params }) => {
     const { postId } = params;
@@ -32,7 +33,7 @@ const PostDetail = ({ params }) => {
         <div>
             <h2>{post.title}</h2>
             <p>{post.content}</p>
-            <Comment />
+            <CommentSection postId={postId} />
         </div>
     );
 };

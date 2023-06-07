@@ -5,9 +5,9 @@ const { getPosts } = require('./getPost');
 const { getPostById } = require('./getPostById');
 const { getMenuData } = require('./getMenuData');
 const { getPostByMenu } = require('./getPostByMenu');
-
-
-
+const { getCommentsByPostId } = require('./getCommentsByPostId');
+const { addComment } = require('./addComment');
+const { updateComment } = require('./updateComment');
 
 // Sử dụng middleware cors
 
@@ -16,8 +16,6 @@ const app = express();
 app.use(express.json());
 
 app.use(cors());
-
-
 
 
 app.post('/login', async (req, res) => {
@@ -128,7 +126,44 @@ app.get("/searchPosts", async (req, res) => {
     }
 });
 
+app.get('/comments/:postId', async (req, res) => {
+    const postId = req.params.postId;
 
+    try {
+        const comments = await getCommentsByPostId(postId);
+        res.status(200).json(comments);
+    } catch (error) {
+        console.log('Error fetching comments:', error);
+        res.status(500).json({ error: 'An error occurred' });
+    }
+});
+
+app.post('/comments', async (req, res) => {
+    const { postId, content, user_id, parentId, created_at } = req.body;
+
+    try {
+        // Gọi hàm addComment để thêm comment vào cơ sở dữ liệu
+        const newComment = await addComment(postId, content, user_id, parentId, created_at);
+
+        res.status(201).json(newComment);
+    } catch (error) {
+        console.log('Error adding comment:', error);
+        res.status(500).json({ error: 'Failed to add comment' });
+    }
+});
+
+app.put('/comments/:commentId', async (req, res) => {
+    const commentId = req.params.commentId;
+    const updatedFields = req.body;
+
+    try {
+        await updateComment(commentId, updatedFields);
+        res.sendStatus(200);
+    } catch (error) {
+        console.error('Error updating comment:', error);
+        res.sendStatus(500);
+    }
+});
 
 
 app.listen(3001, () => {

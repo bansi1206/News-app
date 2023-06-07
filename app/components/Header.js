@@ -35,7 +35,7 @@ const Header = () => {
             <div className="header__top">
                 <p className="header__date">{formattedDate}</p>
                 <div className='header__top__right'>
-                    <div>Search</div>
+                    <Link href="/search">Search</Link>
                     {user ? (
                         <div>
                             <p>Welcome, {user.username}</p>
