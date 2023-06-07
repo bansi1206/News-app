@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CommentForm from './CommentForm';
 
-function Comment({ comment, fetchComments }) {
+function Comment({ comment }) {
     const [replyText, setReplyText] = useState('');
     const [showReplyForm, setShowReplyForm] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editText, setEditText] = useState('');
     const currentDate = new Date();
     const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('en-US', options);
@@ -22,17 +24,39 @@ function Comment({ comment, fetchComments }) {
             content: replyText,
             postId: comment.post_id,
             parentId: comment._id,
-            created_at: formattedDate, // Thêm thông tin created_at
-            user_id: localStorage.getItem('user_id'), // Lấy thông tin user_id từ local storage
+            created_at: formattedDate,
+            user_id: localStorage.getItem('user_id'),
         };
 
         try {
             await axios.post('http://localhost:3001/comments', newComment);
             setShowReplyForm(false);
             setReplyText('');
-            fetchComments(); // Gọi lại hàm fetchComments từ component cha để cập nhật danh sách bình luận
+            comment.fetchComments();
         } catch (error) {
             console.log('Error submitting reply:', error);
+        }
+    };
+
+    const handleEdit = () => {
+        setIsEditing(true);
+        setEditText(comment.content);
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+
+        const updatedComment = {
+            content: editText,
+            created_at: formattedDate,
+        };
+
+        try {
+            await axios.put(`http://localhost:3001/comments/${comment._id}`, updatedComment);
+            setIsEditing(false);
+            comment.fetchComments();
+        } catch (error) {
+            console.log('Error updating comment:', error);
         }
     };
 
@@ -40,23 +64,31 @@ function Comment({ comment, fetchComments }) {
         <div style={commentStyle}>
             <p>{comment.user_name}</p>
             <p>{comment.created_at}</p>
-            <p>{comment.content}</p>
+            {isEditing ? (
+                <form onSubmit={handleUpdate}>
+                    <textarea value={editText} onChange={(e) => setEditText(e.target.value)} />
+                    <button type="submit">Save</button>
+                </form>
+            ) : (
+                <p>{comment.content}</p>
+            )}
+            {comment.user_id === localStorage.getItem('user_id') && (
+                <>
+                    {!isEditing && (
+                        <button onClick={handleEdit}>Edit</button>
+                    )}
+                </>
+            )}
             <button onClick={() => setShowReplyForm(!showReplyForm)}>Reply</button>
             {showReplyForm && (
                 <form onSubmit={handleReplySubmit}>
-                    <textarea
-                        value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                        placeholder="Write a reply"
-                    />
+                    <textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} placeholder="Write a reply" />
                     <button type="submit">Post</button>
                 </form>
             )}
-            {comment.children &&
-                comment.children.map((childComment) => (
-                    <Comment key={childComment._id} comment={childComment} fetchComments={fetchComments} />
-
-                ))}
+            {comment.children && comment.children.map((childComment) => (
+                <Comment key={childComment._id} comment={childComment} fetchComments={comment.fetchComments} />
+            ))}
         </div>
     );
 }
@@ -81,7 +113,7 @@ function CommentSection({ postId }) {
     const handleCommentSubmit = async (newComment) => {
         try {
             await axios.post(`http://localhost:3001/comments`, newComment);
-            CommentSection.fetchComments();
+            fetchComments();
         } catch (error) {
             console.log('Error submitting comment:', error);
         }
@@ -91,11 +123,12 @@ function CommentSection({ postId }) {
         const commentTree = [];
         for (const comment of comments) {
             if (comment.parentId === parentId) {
-                comment.depth = depth; // Thêm thuộc tính độ sâu cho comment
+                comment.depth = depth;
                 const nestedComments = buildCommentTree(comments, comment._id, depth + 1);
                 if (nestedComments.length) {
                     comment.children = nestedComments;
                 }
+                comment.fetchComments = fetchComments;
                 commentTree.push(comment);
             }
         }

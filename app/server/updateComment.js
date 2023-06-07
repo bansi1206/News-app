@@ -1,18 +1,17 @@
 const { client } = require('./db');
+const { ObjectId } = require('mongodb');
 
 async function updateComment(commentId, updatedFields) {
     try {
         await client.connect();
         console.log('Connected to MongoDB');
 
-        const db = client.db('News'); // Thay đổi tên database của bạn
-        const commentCollection = db.collection('comment'); // Thay đổi tên collection cho bảng comment của bạn
+        const db = client.db('News');
+        const commentCollection = db.collection('comment');
 
-        // Cập nhật các trường được chỉ định trong updatedFields
         const updateQuery = { $set: updatedFields };
 
-        // Cập nhật comment trong cơ sở dữ liệu
-        await commentCollection.updateOne({ _id: commentId }, updateQuery);
+        await commentCollection.updateOne({ _id: new ObjectId(commentId) }, updateQuery);
 
         console.log('Comment updated successfully');
     } catch (error) {
