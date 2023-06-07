@@ -8,6 +8,7 @@ const { getPostByMenu } = require('./getPostByMenu');
 const { getCommentsByPostId } = require('./getCommentsByPostId');
 const { addComment } = require('./addComment');
 const { updateComment } = require('./updateComment');
+const { deleteComment } = require('./deleteComment');
 
 // Sử dụng middleware cors
 
@@ -164,6 +165,19 @@ app.put('/comments/:commentId', async (req, res) => {
         res.sendStatus(500);
     }
 });
+
+app.delete('/comments/:commentId', async (req, res) => {
+    const commentId = req.params.commentId;
+
+    try {
+        await deleteComment(commentId);
+        res.sendStatus(200);
+    } catch (error) {
+        console.error('Error deleting comment:', error);
+        res.sendStatus(500);
+    }
+});
+
 
 
 app.listen(3001, () => {

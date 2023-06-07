@@ -12,9 +12,9 @@ function Comment({ comment }) {
     const formattedDate = currentDate.toLocaleDateString('en-US', options);
 
     const commentStyle = {
-        marginLeft: comment.depth * 20 + 'px', // Lùi thẻ con dựa trên độ sâu
-        borderLeft: '1px solid #ccc', // Đường viền trái cho thẻ con
-        paddingLeft: '10px', // Padding bên trái cho thẻ con
+        marginLeft: comment.depth * 20 + 'px',
+        borderLeft: '1px solid #ccc',
+        paddingLeft: '10px',
     };
 
     const handleReplySubmit = async (e) => {
@@ -60,6 +60,15 @@ function Comment({ comment }) {
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            await axios.delete(`http://localhost:3001/comments/${comment._id}`);
+            comment.fetchComments();
+        } catch (error) {
+            console.log('Error deleting comment:', error);
+        }
+    };
+
     return (
         <div style={commentStyle}>
             <p>{comment.user_name}</p>
@@ -77,6 +86,7 @@ function Comment({ comment }) {
                     {!isEditing && (
                         <button onClick={handleEdit}>Edit</button>
                     )}
+                    <button onClick={handleDelete}>Delete</button>
                 </>
             )}
             <button onClick={() => setShowReplyForm(!showReplyForm)}>Reply</button>
