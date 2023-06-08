@@ -35,7 +35,7 @@ const Profile = () => {
             <div>
                 <h2>Welcome, {user.username}!</h2>
                 <p>Email: {user.email}</p>
-                <img src="../server/avatar/default.png" />
+                <img src={user.avatar} />
             </div>
         );
     } else {

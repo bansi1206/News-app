@@ -38,11 +38,11 @@ app.post('/login', async (req, res) => {
 // Tạo storage cho Multer
 // Định nghĩa storage cho multer
 
-app.use('/avatar', express.static('avatar'));
+app.use('/avatar', express.static('public/avatar'));
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'avatar/'); // Thay đổi đường dẫn tới thư mục avatar
+        cb(null, 'public/avatar/'); // Thay đổi đường dẫn tới thư mục avatar
     },
     filename: function (req, file, cb) {
         const fileName = file.originalname;
@@ -74,6 +74,7 @@ app.post('/register', upload.single('avatar'), async (req, res) => {
         res.status(500).json({ error: 'Failed to add user' });
     }
 });
+
 
 
 
