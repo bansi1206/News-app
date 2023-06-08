@@ -9,6 +9,8 @@ const { getCommentsByPostId } = require('./getCommentsByPostId');
 const { addComment } = require('./addComment');
 const { updateComment } = require('./updateComment');
 const { deleteComment } = require('./deleteComment');
+const { addUser, checkValidate } = require('./addUser');
+const multer = require('multer');
 
 // Sử dụng middleware cors
 
@@ -32,6 +34,48 @@ app.post('/login', async (req, res) => {
         res.status(401).json({ message: result.message });
     }
 });
+
+// Tạo storage cho Multer
+// Định nghĩa storage cho multer
+
+app.use('/avatar', express.static('avatar'));
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'avatar/'); // Thay đổi đường dẫn tới thư mục avatar
+    },
+    filename: function (req, file, cb) {
+        const fileName = file.originalname;
+        cb(null, fileName);
+    }
+});
+
+// Khởi tạo multer với storage
+const upload = multer({ storage: storage });
+
+app.post('/register', upload.single('avatar'), async (req, res) => {
+    const { username, password, email, role } = req.body;
+    const avatarPath = req.file ? req.file.path.replace(/\\/g, '/') : 'avatar/default.png'; // Lấy đường dẫn tới file ảnh
+
+    try {
+        const validateResult = await checkValidate(username, email);
+        if (validateResult.usernameExists) {
+            return res.status(201).json({ error: 'Username already exists' });
+        }
+        if (validateResult.emailExists) {
+            return res.status(201).json({ error: 'Email already exists' });
+        }
+        if (!validateResult.usernameExists && !validateResult.emailExists) {
+            const newUser = await addUser(username, password, email, role, avatarPath);
+            return res.status(200).json(newUser);
+        }
+    } catch (error) {
+        console.log('Error adding user:', error);
+        res.status(500).json({ error: 'Failed to add user' });
+    }
+});
+
+
 
 app.get('/api/user/:id', async (req, res) => {
     const { id } = req.params;

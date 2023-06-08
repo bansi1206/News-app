@@ -35,7 +35,7 @@ const Profile = () => {
             <div>
                 <h2>Welcome, {user.username}!</h2>
                 <p>Email: {user.email}</p>
-                {/* Các thông tin khác về người dùng */}
+                <img src="../server/avatar/default.png" />
             </div>
         );
     } else {
