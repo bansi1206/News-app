@@ -8,7 +8,6 @@ import '../styles/form.css'
 const Profile = () => {
     const [user, setUser] = useState(null);
     const [newPassword, setNewPassword] = useState('');
-    const [email, setEmail] = useState('');
     const [acceptedFiles, setAcceptedFiles] = useState([]);
     const router = useRouter();
 
@@ -47,7 +46,6 @@ const Profile = () => {
         const userId = localStorage.getItem('user_id');
         const formData = new FormData();
         formData.append('newPassword', newPassword);
-        formData.append('email', email);
         const file = acceptedFiles[0];
 
         if (file) {
@@ -92,8 +90,6 @@ const Profile = () => {
             <form onSubmit={handleSubmit} encType='multipart/form-data'>
                 <img src={user.avatar} alt='avatar' style={{ width: '250px', height: '250px' }} />
                 <label htmlFor="username">Hi, {user.username}</label>
-
-
                 <label htmlFor="password">New Password</label>
                 <input
                     type="password"
@@ -101,16 +97,14 @@ const Profile = () => {
                     name="newPassword"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-
                 />
                 <label htmlFor="email">Email</label>
                 <input
                     type="text"
                     id="email"
                     name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-
+                    value={user.email}
+                    contentEditable={false}
                 />
 
                 <div {...getRootProps()} className="dropzone">

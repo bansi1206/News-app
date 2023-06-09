@@ -56,7 +56,7 @@ const upload = multer({ storage: storage });
 
 app.post('/api/updateUser/:id', upload.single('avatar'), async (req, res) => {
     const { id } = req.params;
-    const { newPassword, email } = req.body;
+    const { newPassword } = req.body;
     let avatarPath = null;
 
     // Kiểm tra xem người dùng đã tải lên avatar mới hay chưa
@@ -72,11 +72,11 @@ app.post('/api/updateUser/:id', upload.single('avatar'), async (req, res) => {
         }
 
         // Kiểm tra xem có sự thay đổi thông tin người dùng hay không
-        const hasChanges = newPassword || email || avatarPath;
+        const hasChanges = newPassword || avatarPath;
 
         if (hasChanges) {
             // Có sự thay đổi, cập nhật thông tin người dùng
-            await updateUser(id, newPassword, email, avatarPath);
+            await updateUser(id, newPassword, avatarPath);
         }
 
         res.status(200).json({ message: 'User updated successfully', user });

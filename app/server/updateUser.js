@@ -2,7 +2,7 @@ const { ObjectId } = require('mongodb');
 const { client } = require('./db');
 
 
-async function updateUser(userId, password, email, avatarPath) {
+async function updateUser(userId, password, avatarPath) {
     try {
         await client.connect();
         console.log('Connected to MongoDB');
@@ -12,7 +12,7 @@ async function updateUser(userId, password, email, avatarPath) {
 
         await userCollection.updateOne(
             { _id: new ObjectId(userId) },
-            { $set: { password, email, avatar: avatarPath } }
+            { $set: { password, avatar: avatarPath } }
         );
 
         console.log('User updated successfully');
