@@ -10,6 +10,7 @@ const { addComment } = require('./addComment');
 const { updateComment } = require('./updateComment');
 const { deleteComment } = require('./deleteComment');
 const { addUser, checkValidate } = require('./addUser');
+const { updateUser } = require('./updateUser');
 const multer = require('multer');
 
 // Sử dụng middleware cors
@@ -42,7 +43,7 @@ app.use('/avatar', express.static('public/avatar'));
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/avatar/'); // Thay đổi đường dẫn tới thư mục avatar
+        cb(null, '../../public/avatar/'); // Thay đổi đường dẫn tới thư mục avatar
     },
     filename: function (req, file, cb) {
         const fileName = file.originalname;
@@ -53,27 +54,39 @@ const storage = multer.diskStorage({
 // Khởi tạo multer với storage
 const upload = multer({ storage: storage });
 
-app.post('/register', upload.single('avatar'), async (req, res) => {
-    const { username, password, email, role } = req.body;
-    const avatarPath = req.file ? req.file.path.replace(/\\/g, '/') : 'avatar/default.png'; // Lấy đường dẫn tới file ảnh
+app.post('/api/updateUser/:id', upload.single('avatar'), async (req, res) => {
+    const { id } = req.params;
+    const { newPassword, email } = req.body;
+    let avatarPath = null;
+
+    // Kiểm tra xem người dùng đã tải lên avatar mới hay chưa
+    if (req.file) {
+        avatarPath = `/avatar/${req.file.filename}`; // Đường dẫn avatar mới
+    }
 
     try {
-        const validateResult = await checkValidate(username, email);
-        if (validateResult.usernameExists) {
-            return res.status(201).json({ error: 'Username already exists' });
+        // Tìm người dùng trong cơ sở dữ liệu
+        const user = await getUserById(id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
         }
-        if (validateResult.emailExists) {
-            return res.status(201).json({ error: 'Email already exists' });
+
+        // Kiểm tra xem có sự thay đổi thông tin người dùng hay không
+        const hasChanges = newPassword || email || avatarPath;
+
+        if (hasChanges) {
+            // Có sự thay đổi, cập nhật thông tin người dùng
+            await updateUser(id, newPassword, email, avatarPath);
         }
-        if (!validateResult.usernameExists && !validateResult.emailExists) {
-            const newUser = await addUser(username, password, email, role, avatarPath);
-            return res.status(200).json(newUser);
-        }
+
+        res.status(200).json({ message: 'User updated successfully', user });
     } catch (error) {
-        console.log('Error adding user:', error);
-        res.status(500).json({ error: 'Failed to add user' });
+        console.log('Error updating user:', error);
+        res.status(500).json({ error: 'Failed to update user' });
     }
 });
+
+
 
 
 

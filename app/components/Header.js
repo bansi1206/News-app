@@ -38,7 +38,7 @@ const Header = () => {
                     <Link href="/search">Search</Link>
                     {user ? (
                         <div>
-                            <p>Welcome, {user.username}</p>
+                            <p>Welcome, <Link href='/profile'>{user.username}</Link></p>
                             <a href='/logout' className="header__logout">
                                 Logout
                             </a>
