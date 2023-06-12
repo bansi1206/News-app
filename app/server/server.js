@@ -11,6 +11,8 @@ const { updateComment } = require('./updateComment');
 const { deleteComment } = require('./deleteComment');
 const { addUser, checkValidate } = require('./addUser');
 const { updateUser } = require('./updateUser');
+const { getMenu } = require('./getMenu');
+const { getMenuItem } = require('./getMenuItem');
 const multer = require('multer');
 
 // Sử dụng middleware cors
@@ -27,14 +29,16 @@ app.post('/login', async (req, res) => {
     const result = await authenticate(username, password);
 
     if (result.success) {
-        const { id, name } = result.user;
+        const { id, name, role } = result.user;
 
-        // Gửi thông tin người dùng trong phản hồi JSON
-        res.status(200).json({ id, name });
+
+        // Gửi thông tin người dùng và role trong phản hồi JSON
+        res.status(200).json({ id, name, role });
     } else {
         res.status(401).json({ message: result.message });
     }
 });
+
 
 // Tạo storage cho Multer
 // Định nghĩa storage cho multer
@@ -138,6 +142,25 @@ app.get('/menu', async (req, res) => {
     }
 });
 
+app.get('/getMenu', async (req, res) => {
+    try {
+        const menu = await getMenu();
+        res.json(menu);
+    } catch (error) {
+        console.log('Error fetching menu data:', error);
+        res.status(500).json({ error: 'Error fetching menu data' });
+    }
+});
+
+app.get('/getMenuItem', async (req, res) => {
+    try {
+        const menuItem = await getMenuItem();
+        res.json(menuItem);
+    } catch (error) {
+        console.log('Error fetching menu item data:', error);
+        res.status(500).json({ error: 'Error fetching menu item data' });
+    }
+});
 
 
 app.get('/postByMenu/:menuItemId', async (req, res) => {
