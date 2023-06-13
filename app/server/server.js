@@ -13,6 +13,7 @@ const { addUser, checkValidate } = require('./addUser');
 const { updateUser } = require('./updateUser');
 const { getMenu } = require('./getMenu');
 const { getMenuItem } = require('./getMenuItem');
+const { addPost } = require('./addPost');
 const multer = require('multer');
 
 // Sử dụng middleware cors
@@ -43,11 +44,11 @@ app.post('/login', async (req, res) => {
 // Tạo storage cho Multer
 // Định nghĩa storage cho multer
 
-app.use('/avatar', express.static('public/avatar'));
+app.use('/image', express.static('public/image'));
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../../public/avatar/'); // Thay đổi đường dẫn tới thư mục avatar
+        cb(null, '../../public/image/'); // Thay đổi đường dẫn tới thư mục avatar
     },
     filename: function (req, file, cb) {
         const fileName = file.originalname;
@@ -58,6 +59,28 @@ const storage = multer.diskStorage({
 // Khởi tạo multer với storage
 const upload = multer({ storage: storage });
 
+app.post('/register', upload.single('avatar'), async (req, res) => {
+    const { username, password, email, role } = req.body;
+    const avatarPath = req.file ? req.file.path.replace(/\\/g, '/').replace('public/', '').replace('../../', '/') : '/image/default.png'; // Lấy đường dẫn tới file ảnh
+
+    try {
+        const validateResult = await checkValidate(username, email);
+        if (validateResult.usernameExists) {
+            return res.status(201).json({ error: 'Username already exists' });
+        }
+        if (validateResult.emailExists) {
+            return res.status(201).json({ error: 'Email already exists' });
+        }
+        if (!validateResult.usernameExists && !validateResult.emailExists) {
+            const newUser = await addUser(username, password, email, role, avatarPath);
+            return res.status(200).json(newUser);
+        }
+    } catch (error) {
+        console.log('Error adding user:', error);
+        res.status(500).json({ error: 'Failed to add user' });
+    }
+});
+
 app.post('/api/updateUser/:id', upload.single('avatar'), async (req, res) => {
     const { id } = req.params;
     const { newPassword } = req.body;
@@ -65,7 +88,7 @@ app.post('/api/updateUser/:id', upload.single('avatar'), async (req, res) => {
 
     // Kiểm tra xem người dùng đã tải lên avatar mới hay chưa
     if (req.file) {
-        avatarPath = `/avatar/${req.file.filename}`; // Đường dẫn avatar mới
+        avatarPath = `/image/${req.file.filename}`; // Đường dẫn avatar mới
     }
 
     try {
@@ -87,6 +110,20 @@ app.post('/api/updateUser/:id', upload.single('avatar'), async (req, res) => {
     } catch (error) {
         console.log('Error updating user:', error);
         res.status(500).json({ error: 'Failed to update user' });
+    }
+});
+
+
+app.post('/addPost', upload.single('cover'), async (req, res) => {
+    const { title, content, published_at, menu_id, menu_item_id } = req.body;
+    const coverPath = req.file.path.replace(/\\/g, '/').replace('public/', '').replace('../../', '/');
+
+    try {
+        const newPost = await addPost(title, content, published_at, menu_id, menu_item_id, coverPath);
+        return res.status(200).json(newPost);
+    } catch (error) {
+        console.log('Error adding post:', error);
+        res.status(500).json({ error: 'Failed to add post' });
     }
 });
 

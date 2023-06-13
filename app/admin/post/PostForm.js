@@ -11,6 +11,9 @@ const PostForm = () => {
     const [acceptedFiles, setAcceptedFiles] = useState([]);
     const [menu, setMenu] = useState([]);
     const [menuItem, setMenuItem] = useState([]);
+    const currentDate = new Date();
+    const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+    const formattedDate = currentDate.toLocaleDateString('en-US', options);
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: 'image/*',
@@ -56,12 +59,13 @@ const PostForm = () => {
     }, []);
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
         formData.append('title', title);
         formData.append('content', content);
+        formData.append('published_at', formattedDate);
         formData.append('menu_id', selectedMenu);
         formData.append('menu_item_id', selectedMenuItem);
 
@@ -77,6 +81,23 @@ const PostForm = () => {
                 console.log('Vui lòng chỉ tải lên các tệp ảnh (jpg, png, gif)');
                 return;
             }
+        }
+
+        try {
+            const response = await fetch('http://localhost:3001/addPost', {
+                method: 'POST',
+                body: formData,
+            });
+            if (response.ok) {
+                console.log('Data saved successfully');
+                // Xử lý thành công, có thể thực hiện các hành động tiếp theo sau khi gửi thành công dữ liệu
+            } else {
+                console.log('Error saving data');
+                // Xử lý lỗi khi gửi yêu cầu không thành công
+            }
+        } catch (error) {
+            console.log('Error saving data:', error);
+            // Xử lý lỗi khi có lỗi kết nối hoặc yêu cầu không thể được gửi
         }
 
     };
