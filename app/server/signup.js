@@ -1,7 +1,7 @@
 const { client } = require('./db');
 
 
-async function addUser(username, password, email, role, avatarPath) {
+async function signup(username, password, email, role, avatarPath) {
     try {
         await client.connect();
         console.log('Connected to MongoDB');
@@ -52,4 +52,4 @@ async function checkValidate(username, email) {
     }
 }
 
-module.exports = { addUser, checkValidate };
+module.exports = { signup, checkValidate };

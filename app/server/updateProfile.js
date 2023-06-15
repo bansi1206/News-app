@@ -2,7 +2,7 @@ const { ObjectId } = require('mongodb');
 const { client } = require('./db');
 
 
-async function updateUser(userId, password, avatarPath) {
+async function updateProfile(userId, password, avatarPath) {
     try {
         await client.connect();
         console.log('Connected to MongoDB');
@@ -10,9 +10,24 @@ async function updateUser(userId, password, avatarPath) {
         const db = client.db('News');
         const userCollection = db.collection('user');
 
+        const updateFields = {};
+
+        if (password !== '') {
+            updateFields.password = password;
+        }
+
+        if (avatarPath !== '') {
+            updateFields.avatar = avatarPath;
+        }
+
+        if (Object.keys(updateFields).length === 0) {
+            console.log('No fields to update');
+            return;
+        }
+
         await userCollection.updateOne(
             { _id: new ObjectId(userId) },
-            { $set: { password, avatar: avatarPath } }
+            { $set: updateFields }
         );
 
         console.log('User updated successfully');
@@ -22,4 +37,4 @@ async function updateUser(userId, password, avatarPath) {
     }
 }
 
-module.exports = { updateUser };
+module.exports = { updateProfile };

@@ -9,8 +9,8 @@ const { getCommentsByPostId } = require('./getCommentsByPostId');
 const { addComment } = require('./addComment');
 const { updateComment } = require('./updateComment');
 const { deleteComment } = require('./deleteComment');
-const { addUser, checkValidate } = require('./addUser');
-const { updateUser } = require('./updateUser');
+const { signup, checkValidate } = require('./signup');
+const { updateProfile } = require('./updateProfile');
 const { getMenu } = require('./getMenu');
 const { getMenuItem } = require('./getMenuItem');
 const { addPost } = require('./addPost');
@@ -76,7 +76,7 @@ app.post('/register', upload.single('avatar'), async (req, res) => {
             return res.status(201).json({ error: 'Email already exists' });
         }
         if (!validateResult.usernameExists && !validateResult.emailExists) {
-            const newUser = await addUser(username, password, email, role, avatarPath);
+            const newUser = await signup(username, password, email, role, avatarPath);
             return res.status(200).json(newUser);
         }
     } catch (error) {
@@ -85,10 +85,10 @@ app.post('/register', upload.single('avatar'), async (req, res) => {
     }
 });
 
-app.post('/api/updateUser/:id', upload.single('avatar'), async (req, res) => {
+app.put('/api/updateProfile/:id', upload.single('avatar'), async (req, res) => {
     const { id } = req.params;
     const { newPassword } = req.body;
-    let avatarPath = null;
+    let avatarPath = '';
 
     // Kiểm tra xem người dùng đã tải lên avatar mới hay chưa
     if (req.file) {
@@ -103,11 +103,11 @@ app.post('/api/updateUser/:id', upload.single('avatar'), async (req, res) => {
         }
 
         // Kiểm tra xem có sự thay đổi thông tin người dùng hay không
-        const hasChanges = newPassword || avatarPath;
+        const hasChanges = newPassword !== '' || avatarPath !== '';
 
         if (hasChanges) {
             // Có sự thay đổi, cập nhật thông tin người dùng
-            await updateUser(id, newPassword, avatarPath);
+            await updateProfile(id, newPassword, avatarPath);
         }
 
         res.status(200).json({ message: 'User updated successfully', user });

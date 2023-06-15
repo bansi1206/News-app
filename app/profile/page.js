@@ -60,7 +60,7 @@ const Profile = () => {
         }
 
         try {
-            const response = await axios.post(`http://localhost:3001/api/updateUser/${userId}`, formData, {
+            const response = await axios.put(`http://localhost:3001/api/updateProfile/${userId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
