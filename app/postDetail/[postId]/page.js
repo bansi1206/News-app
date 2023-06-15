@@ -31,7 +31,10 @@ const PostDetail = ({ params }) => {
 
     return (
         <div>
+            <img src={post.cover} style={{ width: '250px', height: '250px' }} />
             <h2>{post.title}</h2>
+            <p>By {post.author}</p>
+            <p>{post.published_at}</p>
             <p>{post.content}</p>
             <CommentSection postId={postId} />
         </div>

@@ -1,6 +1,6 @@
 const { client } = require('./db');
 
-async function addPost(title, content, published_at, menu_id, menu_item_id, coverPath) {
+async function addPost(title, content, published_at, menu_id, menu_item_id, coverPath, author, status) {
     try {
         await client.connect();
         console.log('Connected to MongoDB');
@@ -15,6 +15,8 @@ async function addPost(title, content, published_at, menu_id, menu_item_id, cove
             menu_id,
             menu_item_id,
             cover: coverPath,
+            author,
+            status,
         };
 
         const result = await postCollection.insertOne(post);

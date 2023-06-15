@@ -1,7 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import "../../styles/form.css"
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import "../../../styles/form.css"
 
 const PostForm = () => {
     const [title, setTitle] = useState('');
@@ -11,9 +13,11 @@ const PostForm = () => {
     const [acceptedFiles, setAcceptedFiles] = useState([]);
     const [menu, setMenu] = useState([]);
     const [menuItem, setMenuItem] = useState([]);
+    const [user, setUser] = useState(null);
     const currentDate = new Date();
     const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('en-US', options);
+    const router = useRouter();
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: 'image/*',
@@ -21,6 +25,31 @@ const PostForm = () => {
             setAcceptedFiles(files);
         },
     });
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            // Lấy user_id từ localStorage
+            const userId = localStorage.getItem('user_id');
+
+            // Kiểm tra nếu user_id tồn tại
+            if (userId) {
+                try {
+                    // Gọi API endpoint để lấy thông tin người dùng từ server
+                    const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
+                    setUser(response.data);
+                } catch (error) {
+                    console.log('Error fetching user:', error);
+                    router.push('/admin'); // Chuyển hướng đến trang login khi có lỗi
+                }
+            } else {
+                router.push('/admin'); // Chuyển hướng đến trang login nếu không có user_id
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    console.log(user)
 
 
     useEffect(() => {
@@ -68,6 +97,8 @@ const PostForm = () => {
         formData.append('published_at', formattedDate);
         formData.append('menu_id', selectedMenu);
         formData.append('menu_item_id', selectedMenuItem);
+        formData.append('author', user.username)
+        formData.append('status', 'pending')
 
 
         const file = acceptedFiles[0];

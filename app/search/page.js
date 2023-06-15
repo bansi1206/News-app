@@ -41,12 +41,14 @@ const SearchPosts = () => {
                     selectedMenus,
                 },
             });
-            const filteredPosts = response.data;
+            const fetchedPosts = response.data;
+            const filteredPosts = fetchedPosts.filter((post) => post.status === 'published');
             setPosts(filteredPosts);
         } catch (error) {
             console.log("Error searching posts:", error);
         }
     };
+
 
 
     return (

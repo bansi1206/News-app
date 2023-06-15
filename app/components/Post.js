@@ -12,11 +12,13 @@ const Post = () => {
             try {
                 const response = await axios.get('http://localhost:3001/post');
                 const fetchedPosts = response.data;
-                setPosts(fetchedPosts);
+                const publishedPosts = fetchedPosts.filter((post) => post.status === 'published');
+                setPosts(publishedPosts);
             } catch (error) {
                 console.log('Error fetching posts:', error);
             }
         };
+
 
         fetchPosts();
     }, []);
@@ -37,9 +39,9 @@ const Post = () => {
                     </Link>
                     <p className="post__metadata">
                         <span className="post__category">{post.menu}</span>
-                        <span className="post__timestamp">Time</span>
+                        <span className="post__timestamp">{post.published_at}</span>
                     </p>
-                    <p className="post__author">By Author</p>
+                    <p className="post__author">By {post.author}</p>
                     <div className="post__content">{post.content}</div>
                 </div>
             ))}

@@ -14,7 +14,11 @@ const { updateUser } = require('./updateUser');
 const { getMenu } = require('./getMenu');
 const { getMenuItem } = require('./getMenuItem');
 const { addPost } = require('./addPost');
+const { publishPost } = require('./publishPost');
+const { deletePost } = require('./deletePost');
+const { updatePost } = require('./updatePost');
 const multer = require('multer');
+
 
 // Sử dụng middleware cors
 
@@ -115,11 +119,11 @@ app.post('/api/updateUser/:id', upload.single('avatar'), async (req, res) => {
 
 
 app.post('/addPost', upload.single('cover'), async (req, res) => {
-    const { title, content, published_at, menu_id, menu_item_id } = req.body;
-    const coverPath = req.file.path.replace(/\\/g, '/').replace('public/', '').replace('../../', '/');
+    const { title, content, published_at, menu_id, menu_item_id, author, status } = req.body;
+    const coverPath = req.file ? req.file.path.replace(/\\/g, '/').replace('public/', '').replace('../../', '/') : '';
 
     try {
-        const newPost = await addPost(title, content, published_at, menu_id, menu_item_id, coverPath);
+        const newPost = await addPost(title, content, published_at, menu_id, menu_item_id, coverPath, author, status);
         return res.status(200).json(newPost);
     } catch (error) {
         console.log('Error adding post:', error);
@@ -168,6 +172,56 @@ app.get('/post', async (req, res) => {
         res.status(500).json({ error: 'An error occurred' });
     }
 });
+
+app.put('/posts/:postId/publish', async (req, res) => {
+    const postId = req.params.postId;
+
+    try {
+        await publishPost(postId);
+        res.sendStatus(200);
+    } catch (error) {
+        console.error('Error publishing post:', error);
+        res.sendStatus(500);
+    }
+});
+
+app.put('/updatePost/:postId', upload.single('cover'), async (req, res) => {
+    const { postId } = req.params;
+    const { title, content, published_at, menu_id, menu_item_id, author, status } = req.body;
+    const coverPath = req.file ? req.file.path.replace(/\\/g, '/').replace('public/', '').replace('../../', '/') : '';
+
+    try {
+        const updatedPost = await updatePost(
+            postId,
+            title,
+            content,
+            published_at,
+            menu_id,
+            menu_item_id,
+            coverPath,
+            author,
+            status
+        );
+
+        res.json(updatedPost);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update post' });
+    }
+});
+
+app.delete('/post/:postId', async (req, res) => {
+    const postId = req.params.postId;
+
+    try {
+        await deletePost(postId);
+        console.log('Post deleted successfully');
+        res.sendStatus(200);
+    } catch (error) {
+        console.log('Error deleting post:', error);
+        res.sendStatus(500);
+    }
+});
+
 
 app.get('/menu', async (req, res) => {
     try {
