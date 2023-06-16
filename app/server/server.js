@@ -17,6 +17,13 @@ const { addPost } = require('./addPost');
 const { publishPost } = require('./publishPost');
 const { deletePost } = require('./deletePost');
 const { updatePost } = require('./updatePost');
+const { getMenuById } = require('./getMenu');
+const { getMenuItemById } = require('./getMenuItem');
+const { updateMenu, updateMenuItem } = require('./updateMenu')
+const { createMenu, createMenuItem } = require('./addMenu')
+const { deleteMenu, deleteMenuItem } = require('./deleteMenu')
+const { getUsers } = require('./getUsers');
+
 const multer = require('multer');
 
 
@@ -133,7 +140,15 @@ app.post('/addPost', upload.single('cover'), async (req, res) => {
 
 
 
-
+app.get('/getUsers', async (req, res) => {
+    try {
+        const users = await getUsers();
+        res.status(200).json(users);
+    } catch (error) {
+        console.log('Error fetching users:', error);
+        res.status(500).json({ message: 'Error fetching users' });
+    }
+});
 
 
 app.get('/api/user/:id', async (req, res) => {
@@ -233,6 +248,32 @@ app.get('/menu', async (req, res) => {
     }
 });
 
+app.post('/createMenu', async (req, res) => {
+    try {
+        const { title } = req.body;
+
+        const menuId = await createMenu(title);
+
+        res.status(200).json({ message: 'Menu created successfully', menuId });
+    } catch (error) {
+        console.log('Error creating menu:', error);
+        res.status(500).json({ error: 'Failed to create menu' });
+    }
+});
+
+app.post('/createMenuItem', async (req, res) => {
+    try {
+        const { title, menuId } = req.body;
+
+        const menuItemId = await createMenuItem(title, menuId);
+
+        res.status(200).json({ message: 'Menu item created successfully', menuItemId });
+    } catch (error) {
+        console.log('Error creating menu item:', error);
+        res.status(500).json({ error: 'Failed to create menu item' });
+    }
+});
+
 app.get('/getMenu', async (req, res) => {
     try {
         const menu = await getMenu();
@@ -250,6 +291,90 @@ app.get('/getMenuItem', async (req, res) => {
     } catch (error) {
         console.log('Error fetching menu item data:', error);
         res.status(500).json({ error: 'Error fetching menu item data' });
+    }
+});
+
+app.get('/getMenu/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const menu = await getMenuById(id);
+
+        if (!menu) {
+            return res.status(404).json({ error: 'Menu not found' });
+        }
+
+        res.status(200).json(menu);
+    } catch (error) {
+        console.log('Error fetching menu:', error);
+        res.status(500).json({ error: 'Failed to fetch menu' });
+    }
+});
+
+app.get('/getMenuItem/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const menuItem = await getMenuItemById(id);
+
+        if (!menuItem) {
+            return res.status(404).json({ error: 'Menu item not found' });
+        }
+
+        res.status(200).json(menuItem);
+    } catch (error) {
+        console.log('Error fetching menu item:', error);
+        res.status(500).json({ error: 'Failed to fetch menu item' });
+    }
+});
+
+app.put('/updateMenu/:id', async (req, res) => {
+    const { id } = req.params;
+    const { title } = req.body;
+
+    try {
+        await updateMenu(id, title);
+        res.status(200).json({ message: 'Menu updated successfully' });
+    } catch (error) {
+        console.log('Error updating menu:', error);
+        res.status(500).json({ error: 'Failed to update menu' });
+    }
+});
+
+app.put('/updateMenuItem/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, menu_id } = req.body;
+
+        await updateMenuItem(id, title, menu_id);
+
+        res.status(200).json({ message: 'Menu item updated successfully' });
+    } catch (error) {
+        console.log('Error updating menu item:', error);
+        res.status(500).json({ error: 'Failed to update menu item' });
+    }
+});
+
+app.delete('/deleteMenu/:menuId', async (req, res) => {
+    const { menuId } = req.params;
+
+    try {
+        await deleteMenu(menuId);
+        res.status(200).json({ message: 'Menu deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while deleting the menu' });
+    }
+});
+
+
+app.delete('/deleteMenuItem/:menuItemId', async (req, res) => {
+    const { menuItemId } = req.params;
+
+    try {
+        await deleteMenuItem(menuItemId);
+        res.status(200).json({ message: 'Menu item deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while deleting the menu item' });
     }
 });
 
