@@ -11,8 +11,8 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link href="admin/settings">
-                        Settings
+                    <Link href="admin/account">
+                        Account
                     </Link>
                 </li>
                 <li>
@@ -21,8 +21,13 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link href="admin/media">
-                        Media
+                    <Link href="admin/menu-management">
+                        Menu
+                    </Link>
+                </li>
+                <li>
+                    <Link href="admin/settings">
+                        Settings
                     </Link>
                 </li>
             </ul>

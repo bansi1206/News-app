@@ -22,10 +22,10 @@ const Post = () => {
                     setUser(response.data);
                 } catch (error) {
                     console.log('Error fetching user:', error);
-                    router.push('/admin'); // Chuyển hướng đến trang login khi có lỗi
+                    router.push('/admin/login'); // Chuyển hướng đến trang login khi có lỗi
                 }
             } else {
-                router.push('/admin'); // Chuyển hướng đến trang login nếu không có user_id
+                router.push('/admin/login'); // Chuyển hướng đến trang login nếu không có user_id
             }
         };
 

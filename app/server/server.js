@@ -23,6 +23,9 @@ const { updateMenu, updateMenuItem } = require('./updateMenu')
 const { createMenu, createMenuItem } = require('./addMenu')
 const { deleteMenu, deleteMenuItem } = require('./deleteMenu')
 const { getUsers } = require('./getUsers');
+const { updateUser } = require('./updateUser');
+const { addUser } = require('./addUser');
+const { deleteUser } = require('./deleteUser');
 
 const multer = require('multer');
 
@@ -138,6 +141,19 @@ app.post('/addPost', upload.single('cover'), async (req, res) => {
     }
 });
 
+app.post('/addUser', async (req, res) => {
+    const { username, email, password, avatar, role } = req.body;
+
+    try {
+        await addUser(username, email, password, avatar, role);
+        res.status(200).json({ message: 'User added successfully' });
+    } catch (error) {
+        console.log('Error adding user:', error);
+        res.status(500).json({ error: 'Failed to add user' });
+    }
+});
+
+
 
 
 app.get('/getUsers', async (req, res) => {
@@ -147,6 +163,34 @@ app.get('/getUsers', async (req, res) => {
     } catch (error) {
         console.log('Error fetching users:', error);
         res.status(500).json({ message: 'Error fetching users' });
+    }
+});
+
+
+
+app.put('/updateUser/:userId', async (req, res) => {
+    const userId = req.params.userId;
+    const userData = req.body;
+
+    try {
+        await updateUser(userId, userData);
+        res.status(200).json({ message: 'User updated successfully' });
+    } catch (error) {
+        console.log('Error updating user:', error);
+        res.status(500).json({ error: 'Failed to update user' });
+    }
+});
+
+app.delete('/deleteUser/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await deleteUser(id);
+
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.log('Error deleting user:', error);
+        res.status(500).json({ error: 'Failed to delete user' });
     }
 });
 
