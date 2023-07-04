@@ -9,8 +9,13 @@ async function getPostById(postId) {
 
         const db = client.db('News');
         const collection = db.collection('post');
+        const menuItemCollection = db.collection('menu item');
 
         const post = await collection.findOne({ _id: new ObjectId(postId) });
+        const menuItem = await menuItemCollection.findOne({ _id: new ObjectId(post.menu_item_id) });
+        if (menuItem) {
+            post.menu = menuItem.title;
+        }
         console.log(post);
 
         return post;

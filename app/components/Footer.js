@@ -3,7 +3,7 @@ import '../styles/footer.css'
 
 const Footer = () => {
     return (
-        <footer className="footer">
+        <footer className="footer bg-dark text-white">
             <div className="container">
                 <div className="footer__content">
                     <div className="footer__left">
@@ -16,13 +16,13 @@ const Footer = () => {
                     <div className="footer__right">
                         <h3 className="footer__title">Contact</h3>
                         <p className="footer__contact-info">
-                            Email: info@example.com
+                            Email: thanglb.bi11-243@st.usth.edu.vn
                             <br />
                             Phone: 123-456-7890
                         </p>
                     </div>
                 </div>
-                <p className="footer__copy">&copy; 2023 BookWorm. All rights reserved.</p>
+                <p className="footer__copy">&copy; 2023 Vercel. All rights reserved.</p>
             </div>
         </footer>
     );

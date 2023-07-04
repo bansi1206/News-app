@@ -30,7 +30,8 @@ async function getCommentsByPostId(postId) {
             console.log(user)
             return {
                 ...comment,
-                user_name: user.username ? user.username : 'Unknown User'
+                user_name: user.username ? user.username : 'Unknown User',
+                avatar: user.avatar
             };
         });
 

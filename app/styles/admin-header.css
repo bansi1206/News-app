@@ -1,0 +1,121 @@
+.admin-header-container {
+    background-color: #1D2327;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+.logo img {
+    color: #F0F0F1;
+    height: 52px;
+    width: 60px;
+}
+
+.left-header {
+    padding: 0 7px;
+}
+
+ul li {
+    margin-right: 1rem;
+    display: flex;
+}
+
+ul {
+    list-style: none;
+    margin-top: 1rem;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.visit-site:hover {
+    color: #ff2c54;
+}
+
+.visit-site-text {
+    font-size: 13px;
+
+}
+
+.visit-site .house-icon {
+    height: 20px;
+    width: 28px;
+}
+
+.add-post:hover {
+    color: #ff2c54;
+}
+
+.add-post-text {
+    font-size: 13px;
+
+}
+
+.add-post .plus-icon {
+    height: 20px;
+    width: 28px;
+}
+
+.add-dropdown ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 13px;
+}
+
+.add-dropdown ul li a:hover {
+    color: #ff2c54;
+}
+
+.add-dropdown {
+    position: absolute;
+    transform: translate(-15%, 15%);
+    background-color: #1D2327;
+    display: none;
+    padding: 1rem;
+}
+
+.add-dropdown.hover {
+    display: block;
+}
+
+.display-name {
+    color: #fff;
+    font-size: 13px;
+}
+
+.account span img {
+    width: 18px;
+    height: 18px;
+    margin-left: .5rem;
+    margin-right: .5rem;
+}
+
+.account-dropdown ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 13px;
+    text-align: center;
+}
+
+.account-dropdown ul li a:hover {
+    color: #ff2c54;
+}
+
+.account-dropdown {
+    position: absolute;
+    transform: translateY(100%);
+    background-color: #1D2327;
+    display: none;
+    width: 100%;
+}
+
+.account-dropdown.hover {
+    display: block;
+}

@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import '../../styles/form.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../styles/admin-login.css'
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -45,25 +46,44 @@ const Login = () => {
     };
 
     return (
-        <form onSubmit={handleLogin}>
-            <label htmlFor="username">Username</label>
-            <input
-                type="text"
-                id="username"
-                name="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <label htmlFor="password">Password</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit">Login</button>
-        </form>
+        <div>
+            <div className='login-form-container'>
+                <div className='container'>
+                    <img src='/vercel.svg' />
+                    <form onSubmit={handleLogin}>
+                        <small id="noteHelp" className="form-text text-muted">You are logging in to admin page</small>
+                        <div className="form-group">
+                            <label for="exampleInputEmail1">Username</label>
+                            <input
+                                type="text"
+                                id="username"
+                                className="form-control"
+                                name='username'
+                                aria-describedby="usernameHelp"
+                                value={username}
+                                placeholder="Enter username"
+                                onChange={(e) => setUsername(e.target.value)} />
+
+                        </div>
+                        <div className="form-group">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                className="form-control"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <button type="submit" className="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     );
 };
 

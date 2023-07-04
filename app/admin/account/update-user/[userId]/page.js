@@ -1,6 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import AdminHeader from '@/app/components/Admin-header';
+import Sidebar from '@/app/components/Sidebar';
+import '../../../../styles/admin-update-user.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UserEditForm = ({ params }) => {
     const [user, setUser] = useState(null);
@@ -54,36 +58,70 @@ const UserEditForm = ({ params }) => {
 
     return (
         <div>
-            <h2>Edit User</h2>
-            <label htmlFor="username">Username</label>
-            <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled='true'
-            />
-            <label htmlFor="password">Password</label>
-            <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <label htmlFor="email">Email</label>
-            <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <label htmlFor="role">Role</label>
-            <select id="role" value={role} onChange={handleOption}>
-                <option value="user">User</option>
-                <option value="writer">Writer</option>
-                <option value="admin">Admin</option>
-            </select>
-            <button onClick={handleUpdateUser}>Update</button>
+            <AdminHeader />
+            <div className='d-flex'>
+                <Sidebar />
+                <div className='add-user-content-container'>
+                    <div className='header-container d-flex'>
+                        <h4>Edit User</h4>
+                        <a className='go-back' href='/admin/account'>Go Back</a>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <th colSpan={2}>User Infomation</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Username</td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            id="username"
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value)}
+                                            disabled='true'
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Password</td>
+                                    <td>
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Role</td>
+                                    <td>
+                                        <select id="role" value={role} onChange={handleOption}>
+                                            <option value="user">User</option>
+                                            <option value="writer">Writer</option>
+                                            <option value="admin">Admin</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button className='btn btn-submit btn-primary' onClick={handleUpdateUser}>Submit</button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

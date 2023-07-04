@@ -1,0 +1,22 @@
+form input {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+form {
+    border: 1px solid #c3c4c7;
+    padding: 26px 24px 34px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10rem;
+    flex-direction: column;
+}
+
+.container img {
+    width: 84px;
+    height: 84px;
+}

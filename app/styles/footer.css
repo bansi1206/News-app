@@ -1,6 +1,6 @@
 .footer {
     background-color: #f8f8f8;
-    padding: 40px 0;
+    padding: 20px 0;
 }
 
 .container {
@@ -33,13 +33,13 @@
 
 .footer__description {
     font-size: 14px;
-    color: #333;
+    color: #fff;
     line-height: 1.5;
 }
 
 .footer__contact-info {
     font-size: 14px;
-    color: #333;
+    color: #fff;
     line-height: 1.5;
 }
 

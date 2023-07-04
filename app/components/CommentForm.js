@@ -1,14 +1,16 @@
 'use client'
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import '../styles/comment.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-const CommentForm = ({ postId, onCommentSubmit }) => {
+const CommentForm = ({ postId, onCommentSubmit, userAvatar }) => {
     const [text, setText] = useState("");
+    const [isCommentFocused, setCommentFocused] = useState(false);
     const isTextareaDisabled = text.length === 0;
     const currentDate = new Date();
     const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('en-US', options);
-
 
 
 
@@ -30,23 +32,32 @@ const CommentForm = ({ postId, onCommentSubmit }) => {
     const isLoggedIn = localStorage.getItem("user_id");
 
     if (!isLoggedIn) {
-        return <div>You must log in to use this function</div>;
+        return <div>You must <a className="text-decoration-none text-danger" href="/login">log in</a> to use this function</div>;
     }
 
     return (
         <div>
-            <form onSubmit={handleSubmit}>
-                <textarea
-                    className="write-comment"
-                    type="text"
-                    placeholder="write a comment"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    style={{ width: '100%', height: '50px' }}
-                />
-                <button type="submit" className="post-comment" disabled={isTextareaDisabled}>
-                    Post
-                </button>
+            <form className="comment-form row no-gutters" onSubmit={handleSubmit}>
+                <div className="avatar"><img src={userAvatar} /></div>
+                <div className={`form-group col-12 ${isCommentFocused || text ? 'focused' : ''}`}>
+                    <div><label>write a comment</label>
+                        <textarea
+                            className="write-comment"
+                            type="textarea"
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
+                            rows={1}
+                            onFocus={() => setCommentFocused(true)}
+                            onBlur={() => setCommentFocused(false)}
+                        /></div>
+                </div>
+                <div className="col-12">
+                    <button type="submit" className="btn btn-secondary" disabled={isTextareaDisabled}>
+                        Post
+                    </button>
+
+                </div>
+
             </form>
         </div>
     );

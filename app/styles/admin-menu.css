@@ -1,0 +1,121 @@
+.menu-content-container {
+    position: absolute;
+    top: 12%;
+    left: 10%;
+    width: 1670px;
+}
+
+.table-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+table a {
+    text-decoration: none;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.table-container th,
+.table-container td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    vertical-align: middle;
+
+}
+
+.table-container th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table-container a {
+    margin-right: 5px;
+}
+
+.table-container button {
+    margin-left: 5px;
+}
+
+.add-new-post {
+    padding: 4px 8px;
+    position: relative;
+    top: -3px;
+    text-decoration: none;
+    border: 1px solid #2271b1;
+    border-radius: 2px;
+    text-shadow: none;
+    font-weight: 600;
+    color: #2271b1;
+    background: #f6f7f7;
+    cursor: pointer;
+    margin-left: .5rem;
+}
+
+.add-new-post:hover {
+    color: #ff2c54;
+    border-color: #ff2c54;
+}
+
+.header-container {
+    margin-bottom: 1rem;
+}
+
+.button-inactive {
+    background-color: #f8f9fa;
+    border: 1px solid #f8f9fa;
+    border-radius: 4px;
+    color: #3c4043;
+    cursor: pointer;
+    font-family: arial, sans-serif;
+    font-size: 14px;
+    height: 36px;
+    line-height: 27px;
+    min-width: 54px;
+    padding: 0 16px;
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: pre;
+}
+
+.button-inactive:hover {
+    border-color: #dadce0;
+    box-shadow: rgba(0, 0, 0, .1) 0 1px 1px;
+    color: #202124;
+}
+
+.button-active {
+    background-color: #2271b1;
+    border: 1px solid #f8f9fa;
+    border-radius: 4px;
+    color: #3c4043;
+    cursor: pointer;
+    font-family: arial, sans-serif;
+    font-size: 14px;
+    height: 36px;
+    line-height: 27px;
+    min-width: 54px;
+    padding: 0 16px;
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: pre;
+}
+
+.button-active:hover {
+    border-color: #dadce0;
+    box-shadow: rgba(0, 0, 0, .1) 0 1px 1px;
+    color: #202124;
+}
+
+.button-active:focus {
+    border-color: #4285f4;
+    outline: none;
+}

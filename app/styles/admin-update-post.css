@@ -1,0 +1,103 @@
+.add-user-content-container {
+    position: absolute;
+    top: 12%;
+    left: 10%;
+    width: 1670px;
+}
+
+.table-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+table a {
+    text-decoration: none;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container th,
+.table-container td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    vertical-align: middle;
+
+}
+
+.table-container th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table-container a {
+    margin-right: 5px;
+}
+
+.go-back {
+    padding: 4px 8px;
+    position: relative;
+    top: -3px;
+    text-decoration: none;
+    border: 1px solid #2271b1;
+    border-radius: 2px;
+    text-shadow: none;
+    font-weight: 600;
+    color: #2271b1;
+    background: #f6f7f7;
+    cursor: pointer;
+    margin-left: .5rem;
+}
+
+.go-back:hover {
+    color: #ff2c54;
+    border-color: #ff2c54;
+}
+
+.header-container {
+    margin-bottom: 1rem;
+}
+
+table tr td input,
+table tr td select {
+    width: 100%;
+    font-size: 14px;
+    line-height: 2;
+    border-color: #8c8f94;
+    box-shadow: none;
+    outline: none;
+    border-radius: 3px;
+}
+
+.btn-submit {
+    margin-top: 1rem;
+}
+
+.dropzone {
+    border: 2px dashed #ddd;
+    padding: 20px;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.dropzone p {
+    margin: 0;
+    overflow: hidden;
+}
+
+.dropzone:hover {
+    background-color: #f7f7f7;
+}
+
+.dropzone .file {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #888;
+}
+
+.ql-editor {
+    height: 334px;
+}

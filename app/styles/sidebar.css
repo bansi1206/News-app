@@ -1,6 +1,15 @@
 .sidebar {
-    width: 200px;
-    background-color: #f8f8f8;
+    width: 150px;
+    background-color: #1D2327;
+    position: fixed;
+    top: 0;
+    bottom: -120px;
+    z-index: 1;
+}
+
+.sidebar-wrapper {
+    position: fixed;
+    margin-top: 5rem;
 }
 
 .sidebar__menu {
@@ -15,9 +24,35 @@
 
 .sidebar__menu li a {
     text-decoration: none;
-    color: #333;
+    color: #fff;
 }
 
-.sidebar__menu li a:hover {
-    text-decoration: underline;
+.sidebar__menu li:hover {
+    border-left: 4px solid #2271b1;
+}
+
+.sidebar__menu .active:hover {
+    border-left: 4px solid #fff;
+}
+
+.active {
+    background-color: #2271b1;
+    width: 107%;
+}
+
+.active {
+    position: relative;
+}
+
+.active::after {
+    right: -8%;
+    border: solid 8px transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-right-color: #fff;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }

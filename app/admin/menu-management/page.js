@@ -2,10 +2,18 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
+import AdminHeader from '@/app/components/Admin-header';
+import Sidebar from '@/app/components/Sidebar';
+import '../../styles/admin-menu.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const MenuTable = () => {
     const [menu, setMenu] = useState([]);
     const [menuItem, setMenuItem] = useState([]);
+    const [currentMenuPage, setCurrentMenuPage] = useState(1);
+    const [currentMenuItemPage, setCurrentMenuItemPage] = useState(1);
+    const [menuPerPage] = useState(5);
+    const [menuItemPerPage] = useState(5);
 
     useEffect(() => {
         const fetchMenu = async () => {
@@ -29,6 +37,47 @@ const MenuTable = () => {
         fetchMenu();
         fetchMenuItem();
     }, []);
+
+    const indexOfLastMenu = currentMenuPage * menuPerPage;
+    const indexOfFirstMenu = indexOfLastMenu - menuPerPage;
+    const currentMenu = menu.slice(indexOfFirstMenu, indexOfLastMenu);
+    const totalMenuPages = Math.ceil(menu.length / menuPerPage);
+
+
+    const indexOfLastMenuItem = currentMenuItemPage * menuItemPerPage;
+    const indexOfFirstMenuItem = indexOfLastMenuItem - menuItemPerPage;
+    const currentMenuItem = menuItem.slice(indexOfFirstMenuItem, indexOfLastMenuItem);
+    const totalMenuItemPages = Math.ceil(menuItem.length / menuItemPerPage);
+
+    const handleMenuPageChange = (menuPageNumber) => {
+        setCurrentMenuPage(menuPageNumber);
+    };
+
+    const handleMenuItemPageChange = (menuItemPageNumber) => {
+        setCurrentMenuItemPage(menuItemPageNumber);
+    };
+
+    const renderMenuPageNumbers = [...Array(totalMenuPages).keys()].map((menuPageNumber) => (
+        <li key={menuPageNumber} className={currentMenuPage === menuPageNumber + 1 ? 'page-active' : ''}>
+            <button
+                className={currentMenuPage === menuPageNumber + 1 ? 'button-active' : 'button-inactive'}
+                onClick={() => handleMenuPageChange(menuPageNumber + 1)}
+            >
+                {menuPageNumber + 1}
+            </button>
+        </li>
+    ));
+
+    const renderMenuItemPageNumbers = [...Array(totalMenuItemPages).keys()].map((menuItemPageNumber) => (
+        <li key={menuItemPageNumber} className={currentMenuItemPage === menuItemPageNumber + 1 ? 'page-active' : ''}>
+            <button
+                className={currentMenuItemPage === menuItemPageNumber + 1 ? 'button-active' : 'button-inactive'}
+                onClick={() => handleMenuItemPageChange(menuItemPageNumber + 1)}
+            >
+                {menuItemPageNumber + 1}
+            </button>
+        </li>
+    ));
 
 
 
@@ -64,51 +113,76 @@ const MenuTable = () => {
 
     return (
         <div>
-            <h2>Menu</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Menu Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {menu.map((menu) => (
-                        <tr key={menu._id}>
-                            <td>
-                                <Link href={`/admin/menu-management/updte-menu/${menu._id}`}>{menu.title}</Link>
-                            </td>
-                            <td>
-                                <a href={`/admin/menu-management/update-menu/${menu._id}`}>Edit</a>
-                                <button onClick={() => handleDeleteMenu(menu._id)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <h2>Menu Item</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Menu Item Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {menuItem.map((menuItem) => (
-                        <tr key={menuItem._id}>
-                            <td>
-                                <Link href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>{menuItem.title}</Link>
-                            </td>
-                            <td>
-                                <a href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>Edit</a>
-                                <button onClick={() => handleDeleteMenuItem(menuItem)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <AdminHeader />
+            <div className="d-flex">
+                <Sidebar />
+                <div className='menu-content-container'>
+                    <div className='header-container d-flex'>
+                        <h4>Menus</h4>
+                        <a className='add-new-post' href='/admin/menu-management/add-menu'>Add New</a>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Menu Title</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentMenu.map((menu) => (
+                                    <tr key={menu._id}>
+                                        <td>
+                                            <Link href={`/admin/menu-management/updte-menu/${menu._id}`}>{menu.title}</Link>
+                                        </td>
+                                        <td>
+                                            <a className='btn btn-primary' href={`/admin/menu-management/update-menu/${menu._id}`}>Edit</a>
+                                            <button className='btn btn-danger' onClick={() => handleDeleteMenu(menu._id)}>Delete</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div className="pagination d-flex justify-content-center">
+                            <ul className='d-flex'>
+                                {renderMenuPageNumbers}
+                            </ul>
+                        </div>
+                    </div>
+                    <div className='header-container d-flex'>
+                        <h4>Menu Items</h4>
+                        <a className='add-new-post' href='/admin/menu-management/add-menuItem'>Add New</a>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Menu Item Title</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentMenuItem.map((menuItem) => (
+                                    <tr key={menuItem._id}>
+                                        <td>
+                                            <Link href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>{menuItem.title}</Link>
+                                        </td>
+                                        <td>
+                                            <a className='btn btn-primary' href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>Edit</a>
+                                            <button className='btn btn-danger' onClick={() => handleDeleteMenuItem(menuItem)}>Delete</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div className="pagination d-flex justify-content-center">
+                            <ul className='d-flex'>
+                                {renderMenuItemPageNumbers}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

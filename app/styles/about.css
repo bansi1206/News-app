@@ -1,0 +1,157 @@
+.dash {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.about-us {
+    color: red;
+}
+
+ol li a {
+    text-decoration: none;
+    color: #7b7b7b;
+}
+
+.banner {
+    background-color: #f9f9f9;
+    padding: 3rem;
+    margin-bottom: 20px;
+}
+
+.banner h2 {
+    font-size: 2.4rem;
+}
+
+.image-section {
+    display: flex;
+    justify-content: center;
+}
+
+.about-container {
+    margin-bottom: 20px;
+}
+
+.about-author {
+    background-color: #f9f9f9;
+}
+
+.team-block {
+    position: relative;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+
+.team-inner-content {
+    color: #fff;
+    position: absolute;
+    bottom: 2rem;
+    left: 0;
+    right: 0;
+}
+
+.team-block a img {
+    display: block;
+    max-width: 100%;
+    width: initial;
+    height: initial;
+    background: none;
+    opacity: 1;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.text-section {
+    text-align: center;
+    font-family: "Roboto", sans-serif;
+}
+
+.team-block:hover {
+    cursor: pointer;
+}
+
+.author-title {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.author-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease-in-out;
+}
+
+.team-block:hover .author-title::after {
+    transform: scaleX(1);
+}
+
+.social-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.social-icon .icon {
+    transition: transform 0.3s ease-in-out;
+}
+
+.social-icon:hover .icon {
+    transform: rotate(30deg);
+    color: #fff;
+}
+
+.team-social-share-container {
+    position: absolute;
+    top: 3rem;
+    left: 3rem;
+}
+
+.team-social-share-container ul {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.team-social-share-container ul li a {
+    background: #fff;
+    color: #121213;
+    display: block;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 100%;
+    font-size: 1.2rem;
+    line-height: 3.2rem;
+    text-align: center;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.team-social-share-container ul li a:hover {
+    background-color: #ff2c54;
+}
+
+.team-social-share-container ul li {
+    transform: translateX(-100%);
+    transition: all 0.5s;
+}
+
+.team-block:hover ul li {
+    transform: translateX(0);
+}
+
+nav ol li a:hover {
+    color: red;
+    transition: all 0.5s;
+}

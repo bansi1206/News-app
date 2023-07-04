@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CommentForm from './CommentForm';
+import AccessDenied from './Access-denied';
+import '../styles/comment.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function Comment({ comment }) {
+function Comment({ comment, userAvatar, user }) {
     const [replyText, setReplyText] = useState('');
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState('');
+    const [isReplyFocused, setReplyFocused] = useState(false);
+    const [isEditFocused, setEditFocused] = useState(false);
+
     const currentDate = new Date();
     const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('en-US', options);
 
     const commentStyle = {
         marginLeft: comment.depth * 20 + 'px',
-        borderLeft: '1px solid #ccc',
         paddingLeft: '10px',
     };
+
+    console.log(userAvatar)
+
 
     const handleReplySubmit = async (e) => {
         e.preventDefault();
@@ -71,33 +79,51 @@ function Comment({ comment }) {
 
     return (
         <div style={commentStyle}>
-            <p>{comment.user_name}</p>
-            <p>{comment.created_at}</p>
+            {comment.avatar && (
+                <div className="avatar"><img src={comment.avatar} /></div>
+            )}
+
+            <p className='comment-time'>{comment.created_at}</p>
             {isEditing ? (
                 <form onSubmit={handleUpdate}>
-                    <textarea value={editText} onChange={(e) => setEditText(e.target.value)} />
-                    <button type="submit">Save</button>
+                    <div className={`form-group col-12 ${isEditFocused || editText ? 'focused' : ''}`}>
+                        <label>Write a reply</label>
+                        <textarea value={editText} onChange={(e) => setEditText(e.target.value)} />
+                    </div>
+                    <button className='btn btn-primary' type="submit">Save</button>
                 </form>
             ) : (
-                <p>{comment.content}</p>
+                <div className='comment-content'>
+                    <h4>{comment.user_name}</h4>
+                    <p>{comment.content}</p>
+                </div>
             )}
             {comment.user_id === localStorage.getItem('user_id') && (
                 <>
                     {!isEditing && (
-                        <button onClick={handleEdit}>Edit</button>
+                        <button className='btn btn-primary' onClick={handleEdit}>Edit</button>
                     )}
-                    <button onClick={handleDelete}>Delete</button>
+                    <button className='btn btn-primary' onClick={handleDelete}>Delete</button>
                 </>
             )}
-            <button onClick={() => setShowReplyForm(!showReplyForm)}>Reply</button>
+            {localStorage.getItem('user_id') ? (
+                <button className='btn btn-primary' onClick={() => setShowReplyForm(!showReplyForm)}>Reply</button>
+            ) : (<div></div>)}
             {showReplyForm && (
-                <form onSubmit={handleReplySubmit}>
-                    <textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} placeholder="Write a reply" />
-                    <button type="submit">Post</button>
+                <form className='comment-form row no-gutters' onSubmit={handleReplySubmit}>
+                    <div className="avatar"><img src={userAvatar} /></div>
+                    <div className={`form-group col-12 ${isReplyFocused || replyText ? 'focused' : ''}`}>
+                        <label>Write a reply</label>
+                        <textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} onFocus={() => setReplyFocused(true)}
+                            onBlur={() => setReplyFocused(false)} />
+                    </div>
+                    <div className='col-12'>
+                        <button className='btn btn-primary' type="submit">Post</button>
+                    </div>
                 </form>
             )}
             {comment.children && comment.children.map((childComment) => (
-                <Comment key={childComment._id} comment={childComment} fetchComments={comment.fetchComments} />
+                <Comment key={childComment._id} comment={childComment} fetchComments={comment.fetchComments} userAvatar={userAvatar} />
             ))}
         </div>
     );
@@ -105,6 +131,34 @@ function Comment({ comment }) {
 
 function CommentSection({ postId }) {
     const [comments, setComments] = useState([]);
+    const [user, setUser] = useState(null);
+    const [userLoaded, setUserLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
+
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            // Lấy user_id từ localStorage
+            const userId = localStorage.getItem('user_id');
+
+            // Kiểm tra nếu user_id tồn tại
+            if (userId) {
+                try {
+                    // Gọi API endpoint để lấy thông tin người dùng từ server
+                    const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
+                    setUser(response.data);
+                    setUserLoaded(true);
+                    setIsLoading(false);
+
+                } catch (error) {
+                    console.log('Error fetching user:', error);
+                }
+            }
+        };
+        fetchUserData();
+    }, []);
+    console.log(user)
 
     const fetchComments = async () => {
         try {
@@ -117,8 +171,12 @@ function CommentSection({ postId }) {
     };
 
     useEffect(() => {
-        fetchComments();
-    }, [postId]);
+        if (userLoaded) {
+            fetchComments();
+        } else {
+            fetchComments();
+        }
+    }, [userLoaded, postId]);
 
     const handleCommentSubmit = async (newComment) => {
         try {
@@ -148,14 +206,25 @@ function CommentSection({ postId }) {
     const sortedComments = comments.sort((a, b) => a.created_at - b.created_at);
     const commentTree = buildCommentTree(sortedComments);
 
+    const userAvatar = user ? user.avatar : 'fallback-avatar-url';
+
     return (
-        <div>
-            <h3>Comments</h3>
-            <CommentForm postId={postId} onCommentSubmit={handleCommentSubmit} fetchComments={fetchComments} />
-            <div>Comment Sections</div>
-            {commentTree.map((comment) => (
-                <Comment key={comment._id} comment={comment} fetchComments={fetchComments} />
-            ))}
+        <div className='comment-section-wrapper'>
+            <div className='container'>
+                <div className='comment-section'>
+                    <div className='container'>
+                        <h2>Leave A Reply</h2>
+                        {!isLoading ? (
+                            <CommentForm postId={postId} onCommentSubmit={handleCommentSubmit} fetchComments={fetchComments} userAvatar={userAvatar} />
+                        ) : (
+                            <AccessDenied />
+                        )}
+                        {commentTree.map((comment) => (
+                            <Comment key={comment._id} comment={comment} fetchComments={fetchComments} userAvatar={userAvatar} user={user} />
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

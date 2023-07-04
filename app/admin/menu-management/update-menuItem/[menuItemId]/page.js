@@ -1,6 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import "../../../../styles/admin-update-menuItem.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import AdminHeader from '@/app/components/Admin-header';
+import Sidebar from '@/app/components/Sidebar';
 
 const MenuItemEdit = ({ params }) => {
     const { menuItemId } = params;
@@ -54,25 +58,50 @@ const MenuItemEdit = ({ params }) => {
 
     return (
         <div>
-            <h2>Edit Menu Item</h2>
-            <label htmlFor="menuItemTitle">Menu Item Title</label>
-            <input
-                type="text"
-                id="menuItemTitle"
-                value={menuItemTitle}
-                onChange={(e) => setMenuItemTitle(e.target.value)}
-            />
+            <AdminHeader />
+            <div className='d-flex'>
+                <Sidebar />
+                <div className='add-user-content-container'>
+                    <div className='header-container d-flex'>
+                        <h4>Edit Menu Item</h4>
+                        <a className='go-back' href='/admin/menu-management'>Go Back</a>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <th colSpan={2}>Menu Item Infomation</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Menu Item Title</td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            id="menuItemTitle"
+                                            value={menuItemTitle}
+                                            onChange={(e) => setMenuItemTitle(e.target.value)}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Select Menu</td>
+                                    <td>
+                                        <select id="menuSelection" value={selectedMenu} onChange={handleMenuSelection}>
+                                            {menu.map((menu) => (
+                                                <option key={menu._id} value={menu._id}>
+                                                    {menu.title}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                </tr>
 
-            <label htmlFor="menuSelection">Select Menu</label>
-            <select id="menuSelection" value={selectedMenu} onChange={handleMenuSelection}>
-                {menu.map((menu) => (
-                    <option key={menu._id} value={menu._id}>
-                        {menu.title}
-                    </option>
-                ))}
-            </select>
-
-            <button onClick={handleUpdateMenuItem}>Update</button>
+                            </tbody>
+                        </table>
+                        <button className='btn btn-submit btn-primary' onClick={handleUpdateMenuItem}>Submit</button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
