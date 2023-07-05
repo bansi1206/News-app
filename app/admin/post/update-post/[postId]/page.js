@@ -9,6 +9,7 @@ import "../../../../styles/admin-update-post.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AdminHeader from '@/app/components/Admin-header';
 import Sidebar from '@/app/components/Sidebar';
+import AdminAccessDenied from '@/app/components/Admin-access-denied';
 
 const UpdatePost = ({ params }) => {
     const [title, setTitle] = useState('');
@@ -29,6 +30,8 @@ const UpdatePost = ({ params }) => {
         maxHeight: '400px',
         overflow: 'auto'
     };
+    const [isLoading, setLoading] = useState(true);
+
 
 
     const { getRootProps, getInputProps } = useDropzone({
@@ -60,21 +63,19 @@ const UpdatePost = ({ params }) => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            // Lấy user_id từ localStorage
             const userId = localStorage.getItem('user_id');
 
-            // Kiểm tra nếu user_id tồn tại
             if (userId) {
                 try {
-                    // Gọi API endpoint để lấy thông tin người dùng từ server
                     const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
                     setUser(response.data);
+                    setLoading(false)
                 } catch (error) {
                     console.log('Error fetching user:', error);
-                    router.push('/admin'); // Chuyển hướng đến trang login khi có lỗi
+                    router.push('/admin/login');
                 }
             } else {
-                router.push('/admin'); // Chuyển hướng đến trang login nếu không có user_id
+                router.push('/admin/login');
             }
         };
 
@@ -176,119 +177,85 @@ const UpdatePost = ({ params }) => {
 
     return (
         <div>
-            <AdminHeader />
-            <div className='d-flex'>
-                <Sidebar />
-                <div className='add-user-content-container'>
-                    <div className='header-container d-flex'>
-                        <h4>Add New Post</h4>
-                        <a className='go-back' href='/admin/post'>Go Back</a>
+            {!isLoading ? (
+                <>
+                    <AdminHeader />
+                    <div className='d-flex'>
+                        <Sidebar />
+                        {user.role === 'admin' || user.role === 'writer' ? (
+                            <div className='add-user-content-container'>
+                                <div className='header-container d-flex'>
+                                    <h4>Add New Post</h4>
+                                    <a className='go-back' href='/admin/post'>Go Back</a>
+                                </div>
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <th colSpan={2}>Post Infomation</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Title</td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        id="title"
+                                                        value={title}
+                                                        onChange={(e) => setTitle(e.target.value)}
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cover</td>
+                                                <td>
+                                                    <div {...getRootProps()} className="dropzone">
+                                                        <input {...getInputProps()} />
+                                                        <p>Drag 'n' drop a cover image here, or click to select a file</p>
+                                                        {acceptedFiles.map((file) => (
+                                                            <div key={file.name}>
+                                                                <p>{file.name}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Content</td>
+                                                <td>
+                                                    <ReactQuill style={editorStyle} value={content} onChange={handleContentChange} />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Menu</td>
+                                                <td>
+                                                    <select id="menu" value={selectedMenu} onChange={handleMenuChange}>
+                                                        <option value="">Select a menu</option>
+                                                        {menu.map((menu) => (
+                                                            <option key={menu._id} value={menu._id}>{menu.title}</option>
+                                                        ))}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Menu Item</td>
+                                                <td>
+                                                    <select id="menu-item" value={selectedMenuItem} onChange={handleMenuItemChange}>
+                                                        <option value="">Select a menu item</option>
+                                                        {menuItem.map((menuItem) => (
+                                                            <option key={menuItem._id} value={menuItem._id}>{menuItem.title}</option>
+                                                        ))}
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button className='btn btn-submit btn-primary' onClick={handleSubmit}>Submit</button>
+                                </div>
+                            </div>
+                        ) : (<AdminAccessDenied />)}
                     </div>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <th colSpan={2}>Post Infomation</th>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Title</td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            id="title"
-                                            value={title}
-                                            onChange={(e) => setTitle(e.target.value)}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Cover</td>
-                                    <td>
-                                        <div {...getRootProps()} className="dropzone">
-                                            <input {...getInputProps()} />
-                                            <p>Drag 'n' drop a cover image here, or click to select a file</p>
-                                            {acceptedFiles.map((file) => (
-                                                <div key={file.name}>
-                                                    <p>{file.name}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Content</td>
-                                    <td>
-                                        <ReactQuill style={editorStyle} value={content} onChange={handleContentChange} />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Menu</td>
-                                    <td>
-                                        <select id="menu" value={selectedMenu} onChange={handleMenuChange}>
-                                            <option value="">Select a menu</option>
-                                            {menu.map((menu) => (
-                                                <option key={menu._id} value={menu._id}>{menu.title}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Menu Item</td>
-                                    <td>
-                                        <select id="menu-item" value={selectedMenuItem} onChange={handleMenuItemChange}>
-                                            <option value="">Select a menu item</option>
-                                            {menuItem.map((menuItem) => (
-                                                <option key={menuItem._id} value={menuItem._id}>{menuItem.title}</option>
-                                            ))}
-                                        </select>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <button className='btn btn-submit btn-primary' onClick={handleSubmit}>Submit</button>
-                    </div>
-                </div>
-            </div>
-            {/* <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }} encType='multipart/form-data'>
-                <label htmlFor="title">Title</label>
-                <input
-                    type="text"
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-
-                <div {...getRootProps()} className="dropzone">
-                    <input {...getInputProps()} />
-                    <p>Drag 'n' drop a cover image here, or click to select a file</p>
-                    {acceptedFiles.map((file) => (
-                        <div key={file.name}>
-                            <p>{file.name}</p>
-                        </div>
-                    ))}
-                </div>
-
-                <label htmlFor="content">Content</label>
-                <ReactQuill value={content} onChange={handleContentChange} />
-
-                <label htmlFor="menu">Menu</label>
-                <select id="menu" value={selectedMenu} onChange={handleMenuChange}>
-                    <option value="">Select a menu</option>
-                    {menu.map((menu) => (
-                        <option key={menu._id} value={menu._id}>{menu.title}</option>
-                    ))}
-                </select>
-
-                <label htmlFor="menu-item">Menu Item</label>
-                <select id="menu-item" value={selectedMenuItem} onChange={handleMenuItemChange}>
-                    <option value="">Select a menu item</option>
-                    {menuItem.map((menuItem) => (
-                        <option key={menuItem._id} value={menuItem._id}>{menuItem.title}</option>
-                    ))}
-                </select>
-
-                <button type="submit">Submit</button>
-            </form> */}
+                </>
+            ) : (<div></div>)}
         </div>
     );
 };

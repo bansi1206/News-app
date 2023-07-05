@@ -4,6 +4,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import AdminHeader from '@/app/components/Admin-header';
 import Sidebar from '@/app/components/Sidebar';
+import AdminAccessDenied from '@/app/components/Admin-access-denied';
 import '../../styles/admin-menu.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -14,6 +15,33 @@ const MenuTable = () => {
     const [currentMenuItemPage, setCurrentMenuItemPage] = useState(1);
     const [menuPerPage] = useState(5);
     const [menuItemPerPage] = useState(5);
+
+    const [user, setUser] = useState(null);
+    const [isLoading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            // Lấy user_id từ localStorage
+            const userId = localStorage.getItem('user_id');
+
+            // Kiểm tra nếu user_id tồn tại
+            if (userId) {
+                try {
+                    // Gọi API endpoint để lấy thông tin người dùng từ server
+                    const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
+                    setUser(response.data);
+                    setLoading(false);
+                } catch (error) {
+                    console.log('Error fetching user:', error);
+                    router.push('/admin/login'); // Chuyển hướng đến trang login khi có lỗi
+                }
+            } else {
+                router.push('/admin/login'); // Chuyển hướng đến trang login nếu không có user_id
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     useEffect(() => {
         const fetchMenu = async () => {
@@ -113,76 +141,80 @@ const MenuTable = () => {
 
     return (
         <div>
-            <AdminHeader />
-            <div className="d-flex">
-                <Sidebar />
-                <div className='menu-content-container'>
-                    <div className='header-container d-flex'>
-                        <h4>Menus</h4>
-                        <a className='add-new-post' href='/admin/menu-management/add-menu'>Add New</a>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Menu Title</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentMenu.map((menu) => (
-                                    <tr key={menu._id}>
-                                        <td>
-                                            <Link href={`/admin/menu-management/updte-menu/${menu._id}`}>{menu.title}</Link>
-                                        </td>
-                                        <td>
-                                            <a className='btn btn-primary' href={`/admin/menu-management/update-menu/${menu._id}`}>Edit</a>
-                                            <button className='btn btn-danger' onClick={() => handleDeleteMenu(menu._id)}>Delete</button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className="pagination d-flex justify-content-center">
-                            <ul className='d-flex'>
-                                {renderMenuPageNumbers}
-                            </ul>
+            {!isLoading ? (<>
+                <AdminHeader />
+                <div className="d-flex">
+                    <Sidebar />
+                    {user.role === 'admin' ? (
+                        <div className='menu-content-container'>
+                            <div className='header-container d-flex'>
+                                <h4>Menus</h4>
+                                <a className='add-new-post' href='/admin/menu-management/add-menu'>Add New</a>
+                            </div>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Menu Title</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentMenu.map((menu) => (
+                                            <tr key={menu._id}>
+                                                <td>
+                                                    <Link href={`/admin/menu-management/updte-menu/${menu._id}`}>{menu.title}</Link>
+                                                </td>
+                                                <td>
+                                                    <a className='btn btn-primary' href={`/admin/menu-management/update-menu/${menu._id}`}>Edit</a>
+                                                    <button className='btn btn-danger' onClick={() => handleDeleteMenu(menu._id)}>Delete</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                <div className="pagination d-flex justify-content-center">
+                                    <ul className='d-flex'>
+                                        {renderMenuPageNumbers}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className='header-container d-flex'>
+                                <h4>Menu Items</h4>
+                                <a className='add-new-post' href='/admin/menu-management/add-menuItem'>Add New</a>
+                            </div>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Menu Item Title</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentMenuItem.map((menuItem) => (
+                                            <tr key={menuItem._id}>
+                                                <td>
+                                                    <Link href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>{menuItem.title}</Link>
+                                                </td>
+                                                <td>
+                                                    <a className='btn btn-primary' href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>Edit</a>
+                                                    <button className='btn btn-danger' onClick={() => handleDeleteMenuItem(menuItem)}>Delete</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                <div className="pagination d-flex justify-content-center">
+                                    <ul className='d-flex'>
+                                        {renderMenuItemPageNumbers}
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div className='header-container d-flex'>
-                        <h4>Menu Items</h4>
-                        <a className='add-new-post' href='/admin/menu-management/add-menuItem'>Add New</a>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Menu Item Title</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentMenuItem.map((menuItem) => (
-                                    <tr key={menuItem._id}>
-                                        <td>
-                                            <Link href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>{menuItem.title}</Link>
-                                        </td>
-                                        <td>
-                                            <a className='btn btn-primary' href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>Edit</a>
-                                            <button className='btn btn-danger' onClick={() => handleDeleteMenuItem(menuItem)}>Delete</button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className="pagination d-flex justify-content-center">
-                            <ul className='d-flex'>
-                                {renderMenuItemPageNumbers}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    ) : (<AdminAccessDenied />)}
+                </div></>) : (<></>)
+            }
         </div>
     );
 };

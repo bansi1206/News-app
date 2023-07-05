@@ -26,6 +26,7 @@ const { getUsers } = require('./getUsers');
 const { updateUser } = require('./updateUser');
 const { addUser } = require('./addUser');
 const { deleteUser } = require('./deleteUser');
+const { increaseViewCount } = require('./increaseViewCount')
 
 const multer = require('multer');
 
@@ -46,17 +47,22 @@ app.post('/login', async (req, res) => {
     if (result.success) {
         const { id, name, role } = result.user;
 
-
-        // Gửi thông tin người dùng và role trong phản hồi JSON
         res.status(200).json({ id, name, role });
     } else {
         res.status(401).json({ message: result.message });
     }
 });
 
-
-// Tạo storage cho Multer
-// Định nghĩa storage cho multer
+app.post('/post/:postId/increaseViewCount', async (req, res) => {
+    const { postId } = req.params;
+    try {
+        await increaseViewCount(postId);
+        res.status(200).json({ message: 'View count increased' });
+    } catch (error) {
+        console.log('Error increasing view count:', error);
+        res.status(500).json({ message: 'Error increasing view count' });
+    }
+});
 
 app.use('/image', express.static('public/image'));
 
@@ -449,8 +455,7 @@ app.get("/searchPosts", async (req, res) => {
             const searchTerm = searchValue.toLowerCase();
             filteredPosts = filteredPosts.filter(
                 (post) =>
-                    post.title.toLowerCase().includes(searchTerm) ||
-                    post.content.toLowerCase().includes(searchTerm)
+                    post.title.toLowerCase().includes(searchTerm)
             );
         }
 

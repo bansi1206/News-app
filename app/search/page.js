@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const SearchPosts = () => {
     const [posts, setPosts] = useState([])
     const [keyword, setKeyword] = useState('');
-
+    const [shouldReload, setShouldReload] = useState(false);
     const searchParams = useSearchParams();
 
     useEffect(() => {
@@ -23,7 +23,6 @@ const SearchPosts = () => {
                 console.log("Error fetching posts:", error);
             }
         };
-
         fetchPosts();
     }, []);
 
@@ -45,6 +44,7 @@ const SearchPosts = () => {
 
         if (keyword && posts.length > 0) {
             handleSearch(keyword);
+            setShouldReload(true);
         }
     }, [keyword, posts]);
 
@@ -52,6 +52,10 @@ const SearchPosts = () => {
         const currentKeyword = searchParams.get('searchValue');
         if (currentKeyword) {
             setKeyword(currentKeyword);
+            if (shouldReload) {
+                setShouldReload(false);
+                window.location.reload();
+            }
         }
     }, [searchParams]);
 
@@ -86,28 +90,31 @@ const SearchPosts = () => {
                             <div className='row d-flex'>
                                 <div className='col-lg-8'>
                                     <div className='row d-flex grid row-gap-3'>
-                                        {posts.map((post) => (
-                                            <div className="post-container d-flex" key={post._id}>
-                                                <div className='post-cover'>
-                                                    <a href={`/postDetail/${post._id}`}>
-                                                        <span>
-                                                            <img src={`${post.cover}`} />
-                                                        </span>
-                                                    </a>
+                                        {posts.length !== 0 ? (
+                                            posts.map((post) => (
+                                                <div className="post-container d-flex" key={post._id}>
+                                                    <div className='post-cover'>
+                                                        <a href={`/postDetail/${post._id}`}>
+                                                            <span>
+                                                                <img src={`${post.cover}`} />
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                    <div className='post-menu ms-2'>
+                                                        <div className='postCat-group'>
+                                                            <a className='post-cat cat-btn text-white' href={`/postByMenu/${post.menu_item_id}`}>{post.menu}</a>
+                                                        </div>
+                                                        <div className='post-title'>
+                                                            <h3 className='post-title'><a href={`/postDetail/${post._id}`}>{post.title}</a></h3>
+                                                        </div>
+                                                        <div className='post-metas'>
+                                                            <p className='post-author'>By {post.author}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className='post-menu ms-2'>
-                                                    <div className='postCat-group'>
-                                                        <a className='post-cat cat-btn text-white' href={`/postByMenu/${post.menu_item_id}`}>{post.menu}</a>
-                                                    </div>
-                                                    <div className='post-title'>
-                                                        <h3 className='post-title'><a href={`/postDetail/${post._id}`}>{post.title}</a></h3>
-                                                    </div>
-                                                    <div className='post-metas'>
-                                                        <p className='post-author'>By {post.author}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            ))
+                                        ) : (<div>No posts found</div>)
+                                        }
                                     </div>
                                 </div>
                             </div>

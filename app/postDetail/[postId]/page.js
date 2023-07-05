@@ -6,12 +6,27 @@ import Footer from '@/app/components/Footer';
 import CommentSection from '@/app/components/Comment';
 import '../../styles/postDetail.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 
 
 const PostDetail = ({ params }) => {
     const { postId } = params;
     console.log(postId)
     const [post, setPost] = useState(null);
+
+
+    useEffect(() => {
+        const increaseViewCount = async () => {
+            try {
+                await axios.post(`http://localhost:3001/post/${postId}/increaseViewCount`);
+            } catch (error) {
+                console.log('Error increasing view count:', error);
+            }
+        };
+
+        increaseViewCount();
+    }, [postId]);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -60,6 +75,10 @@ const PostDetail = ({ params }) => {
                                     <div className='post-metas'>
                                         <ul className='list-inline d-flex'>
                                             <li>By {post.author}</li>
+                                            <li>
+                                                <i className='dot'>.</i>
+                                                <FontAwesomeIcon icon={faEye} /> {post.viewCount} Views
+                                            </li>
                                             <li>
                                                 <i className='dot'>.</i>
                                                 {post.published_at}

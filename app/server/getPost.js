@@ -9,6 +9,7 @@ async function getPosts() {
         const db = client.db('News'); // Thay đổi tên database của bạn
         const postCollection = db.collection('post'); // Thay đổi tên collection của bạn
         const menuItemCollection = db.collection('menu item'); // Thay đổi tên collection của bạn
+        const commentCollection = db.collection('comment');
 
         const posts = await postCollection.find().toArray();
 
@@ -18,7 +19,11 @@ async function getPosts() {
             if (menuItem) {
                 post.menu = menuItem.title;
             }
+            const commentCount = await commentCollection.countDocuments({ post_id: post._id.toString() });
+            post.commentCount = commentCount;
         }
+
+        console.log(posts)
 
         return posts;
     } catch (error) {

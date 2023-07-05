@@ -137,3 +137,21 @@ td p {
     border-color: #4285f4;
     outline: none;
 }
+
+.comment-icon-container {
+    position: relative;
+}
+
+.icon-message {
+    height: 22px;
+    width: 24px;
+}
+
+.comment-count {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #fff;
+}
