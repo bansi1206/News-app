@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"next dev\" \"node ./app/server/server.js\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -30,5 +30,8 @@
     "react-flag-kit": "^1.1.1",
     "react-quill": "^2.0.0",
     "recharts": "^2.7.2"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
   }
 }
