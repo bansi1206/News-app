@@ -9,6 +9,7 @@ import '../../styles/admin-post.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
+import AdminAccessDenied from '@/app/components/Admin-access-denied';
 
 const Post = () => {
     const [posts, setPosts] = useState([]);
@@ -172,7 +173,7 @@ const Post = () => {
                                 </div>
                             </div>
                         </div>
-                    ) : (<></>)}
+                    ) : (<AdminAccessDenied />)}
                 </div>
             </>) : (<></>)}
         </div>

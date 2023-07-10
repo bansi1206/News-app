@@ -9,13 +9,41 @@ import { faArrowRight, faEye, faPen, faUser } from "@fortawesome/free-solid-svg-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import CountryInfo from "../components/Country";
+import { useRouter } from "next/navigation";
+import AdminAccessDenied from "../components/Admin-access-denied";
 
 const Admin = () => {
     const [users, setUsers] = useState([]);
     const [views, setViews] = useState([]);
     const [posts, setPosts] = useState([]);
     const [topPosts, setTopPosts] = useState([]);
+    const [user, setUser] = useState([]);
+    const [isLoading, setLoading] = useState(true);
+    const router = useRouter();
     const totalViews = posts.reduce((total, post) => total + post.viewCount, 0);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const userId = localStorage.getItem('user_id');
+
+
+            if (userId) {
+                try {
+
+                    const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
+                    setUser(response.data);
+                    setLoading(false);
+                } catch (error) {
+                    console.log('Error fetching user:', error);
+                    router.push('/admin/login');
+                }
+            } else {
+                router.push('/admin/login');
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
 
 
@@ -71,79 +99,86 @@ const Admin = () => {
 
     return (
         <div>
-            <AdminHeader />
-            <div className="d-flex">
-                <Sidebar />
-                <div className="page-body">
-                    <div className="container">
-                        <h4>Dashboard</h4>
-                        <div className="dashboard">
-                            <div className="row">
-                                <div className="col-4">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <div className="float-end">
-                                                <div className="icon-container">
-                                                    <FontAwesomeIcon className="icon" icon={faUser} />
+            {!isLoading ? (
+                <>
+                    <AdminHeader />
+                    <div className="d-flex">
+                        <Sidebar />
+                        {user.role === 'admin' || user.role === 'writer' ? (
+                            <div className="page-body">
+                                <div className="container">
+                                    <h4>Dashboard</h4>
+                                    <div className="dashboard">
+                                        <div className="row">
+                                            <div className="col-4">
+                                                <div className="card">
+                                                    <div className="card-body">
+                                                        <div className="float-end">
+                                                            <div className="icon-container">
+                                                                <FontAwesomeIcon className="icon" icon={faUser} />
+                                                            </div>
+                                                        </div>
+                                                        <h5 className="text-muted fw-normal mt-0">Users</h5>
+                                                        <h3 className="mt-3 mb-3">{users.length}</h3>
+                                                        <a href="/admin/account" class="btn btn-primary"><FontAwesomeIcon className="icon" icon={faArrowRight} /></a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <h5 className="text-muted fw-normal mt-0">Users</h5>
-                                            <h3 className="mt-3 mb-3">{users.length}</h3>
-                                            <a href="/admin/account" class="btn btn-primary"><FontAwesomeIcon className="icon" icon={faArrowRight} /></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-4">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <div className="float-end">
-                                                <div className="icon-container">
-                                                    <FontAwesomeIcon className="icon" icon={faPen} />
+                                            <div className="col-4">
+                                                <div className="card">
+                                                    <div className="card-body">
+                                                        <div className="float-end">
+                                                            <div className="icon-container">
+                                                                <FontAwesomeIcon className="icon" icon={faPen} />
+                                                            </div>
+                                                        </div>
+                                                        <h5 className="text-muted fw-normal mt-0">Posts</h5>
+                                                        <h3 className="mt-3 mb-3">{posts.length}</h3>
+                                                        <a href="/admin/post" class="btn btn-primary"><FontAwesomeIcon className="icon" icon={faArrowRight} /></a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <h5 className="text-muted fw-normal mt-0">Posts</h5>
-                                            <h3 className="mt-3 mb-3">{posts.length}</h3>
-                                            <a href="/admin/post" class="btn btn-primary"><FontAwesomeIcon className="icon" icon={faArrowRight} /></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-4">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <div className="float-end">
-                                                <div className="icon-container">
-                                                    <FontAwesomeIcon className="icon" icon={faEye} />
+                                            <div className="col-4">
+                                                <div className="card">
+                                                    <div className="card-body">
+                                                        <div className="float-end">
+                                                            <div className="icon-container">
+                                                                <FontAwesomeIcon className="icon" icon={faEye} />
+                                                            </div>
+                                                        </div>
+                                                        <h5 className="text-muted fw-normal mt-0">Views</h5>
+                                                        <h3 className="mt-3 mb-3">{totalViews}</h3>
+                                                        <a href="#" class="btn btn-primary"><FontAwesomeIcon className="icon" icon={faArrowRight} /></a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <h5 className="text-muted fw-normal mt-0">Views</h5>
-                                            <h3 className="mt-3 mb-3">{totalViews}</h3>
-                                            <a href="#" class="btn btn-primary"><FontAwesomeIcon className="icon" icon={faArrowRight} /></a>
                                         </div>
                                     </div>
+                                    <div className="chart-container">
+                                        <h4>Top 5 most viewed posts</h4>
+                                        <ResponsiveContainer width="100%" height={400}>
+                                            <BarChart data={topPosts}>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="title" hide />
+                                                <YAxis />
+                                                <Tooltip />
+                                                <Legend />
+                                                <Bar dataKey="viewCount" fill="rgba(75, 192, 192, 0.5)" stroke="rgba(75, 192, 192, 1)" />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                    {/* <div className="country-container">
+                                {views.map((views) => (
+                                    <CountryInfo key={views._id} ip={views.viewerIp} />
+                                ))}
+                            </div> */}
                                 </div>
                             </div>
-                        </div>
-                        <div className="chart-container">
-                            <h4>Top 5 most viewed posts</h4>
-                            <ResponsiveContainer width="100%" height={400}>
-                                <BarChart data={topPosts}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="title" hide />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Bar dataKey="viewCount" fill="rgba(75, 192, 192, 0.5)" stroke="rgba(75, 192, 192, 1)" />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-                        {/* <div className="country-container">
-                            {views.map((views) => (
-                                <CountryInfo key={views._id} ip={views.viewerIp} />
-                            ))}
-                        </div> */}
+
+                        ) : (<AdminAccessDenied />)}
                     </div>
-                </div>
-            </div>
+                </>
+            ) : (<div></div>)}
         </div>
     )
 }
