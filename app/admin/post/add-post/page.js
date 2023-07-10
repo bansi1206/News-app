@@ -1,13 +1,13 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import AdminHeader from '@/app/components/Admin-header';
 import Sidebar from '@/app/components/Sidebar';
 import AdminAccessDenied from '@/app/components/Admin-access-denied';
+import dynamic from 'next/dynamic';
 import '../../../styles/admin-add-post.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -20,12 +20,12 @@ const PostForm = () => {
     const [menu, setMenu] = useState([]);
     const [menuItem, setMenuItem] = useState([]);
     const [user, setUser] = useState(null);
-    const [isLoading, setLoading] = useState(true)
-
+    const [isLoading, setLoading] = useState(true);
     const currentDate = new Date();
     const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('en-US', options);
     const router = useRouter();
+    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
     const editorStyle = {
         maxHeight: '400px',
         overflow: 'auto'
