@@ -6,6 +6,7 @@ import Sidebar from '@/app/components/Sidebar';
 import AdminAccessDenied from '@/app/components/Admin-access-denied';
 import '../../styles/admin-account.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useRouter } from 'next/navigation';
 
 
 const UserTable = () => {
@@ -14,6 +15,7 @@ const UserTable = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [usersPerPage] = useState(5);
     const [user, setUser] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchUserData = async () => {

@@ -6,6 +6,7 @@ import Sidebar from '@/app/components/Sidebar';
 import AdminAccessDenied from '@/app/components/Admin-access-denied';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/admin-add-user.css';
+import { useRouter } from 'next/navigation';
 
 const UserAddForm = () => {
     const [username, setUsername] = useState('');
@@ -14,6 +15,7 @@ const UserAddForm = () => {
     const [role, setRole] = useState('');
     const [user, setUser] = useState([]);
     const [isLoading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchUserData = async () => {

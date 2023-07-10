@@ -7,6 +7,7 @@ import Sidebar from '@/app/components/Sidebar';
 import AdminAccessDenied from '@/app/components/Admin-access-denied';
 import '../../styles/admin-menu.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useRouter } from 'next/navigation';
 
 const MenuTable = () => {
     const [menu, setMenu] = useState([]);
@@ -15,7 +16,7 @@ const MenuTable = () => {
     const [currentMenuItemPage, setCurrentMenuItemPage] = useState(1);
     const [menuPerPage] = useState(5);
     const [menuItemPerPage] = useState(5);
-
+    const router = useRouter();
     const [user, setUser] = useState(null);
     const [isLoading, setLoading] = useState(true);
 

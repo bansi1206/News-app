@@ -27,6 +27,7 @@ const { updateUser } = require('./updateUser');
 const { addUser } = require('./addUser');
 const { deleteUser } = require('./deleteUser');
 const { increaseViewCount } = require('./increaseViewCount')
+const { getViews } = require('./getViews')
 
 const multer = require('multer');
 
@@ -55,14 +56,29 @@ app.post('/login', async (req, res) => {
 
 app.post('/post/:postId/increaseViewCount', async (req, res) => {
     const { postId } = req.params;
+    const { timestamp } = req.body;
+    const viewerIp = req.ip;
+
     try {
-        await increaseViewCount(postId);
+        await increaseViewCount(postId, timestamp, viewerIp);
         res.status(200).json({ message: 'View count increased' });
     } catch (error) {
         console.log('Error increasing view count:', error);
         res.status(500).json({ message: 'Error increasing view count' });
     }
 });
+
+app.get('/views', async (req, res) => {
+    try {
+        const views = await getViews();
+
+        res.status(200).json(views);
+    } catch (error) {
+        console.log('Error fetching views:', error);
+        res.status(500).json({ message: 'Error fetching views' });
+    }
+});
+
 
 app.use('/image', express.static('public/image'));
 
@@ -220,6 +236,7 @@ app.get('/post/:id', async (req, res) => {
 
     try {
         const post = await getPostById(postId);
+        console.log(post.relatedPosts);
         res.json(post);
     } catch (error) {
         console.log('Error fetching post:', error);

@@ -15,6 +15,15 @@ async function getPostById(postId) {
         const menuItem = await menuItemCollection.findOne({ _id: new ObjectId(post.menu_item_id) });
         if (menuItem) {
             post.menu = menuItem.title;
+            const relatedPosts = await collection.find({ menu_item_id: post.menu_item_id }).toArray();
+            const relatedPostsWithMenu = relatedPosts.map((relatedPost) => {
+                return {
+                    ...relatedPost,
+                    menu: post.menu
+                };
+            });
+
+            post.relatedPosts = relatedPostsWithMenu;
         }
         console.log(post);
 

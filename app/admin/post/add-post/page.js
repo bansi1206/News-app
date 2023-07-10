@@ -21,6 +21,7 @@ const PostForm = () => {
     const [menuItem, setMenuItem] = useState([]);
     const [user, setUser] = useState(null);
     const [isLoading, setLoading] = useState(true)
+
     const currentDate = new Date();
     const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
     const formattedDate = currentDate.toLocaleDateString('en-US', options);

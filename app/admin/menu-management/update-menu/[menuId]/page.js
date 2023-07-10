@@ -6,12 +6,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import AdminHeader from '@/app/components/Admin-header';
 import Sidebar from '@/app/components/Sidebar';
 import AdminAccessDenied from '@/app/components/Admin-access-denied';
+import { useRouter } from 'next/navigation';
 
 const MenuEdit = ({ params }) => {
     const { menuId } = params;
     const [menu, setMenu] = useState(null);
     const [menuTitle, setMenuTitle] = useState('');
-
+    const router = useRouter();
     const [user, setUser] = useState(null);
     const [isLoading, setLoading] = useState(true);
 

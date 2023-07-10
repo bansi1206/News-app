@@ -4,6 +4,10 @@
     position: relative;
 }
 
+.fig-container {
+    width: 510px;
+}
+
 .post-cat-group {
     display: flex;
     justify-content: start;
@@ -33,7 +37,6 @@
 
 .post-body h3 {
     font-size: 1.5rem;
-    line-height: 3.2rem;
 }
 
 .post-body a {
@@ -69,7 +72,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%;
+    width: 90%;
     height: 2px;
     background-color: black;
     transform: scaleX(0);
@@ -161,4 +164,15 @@
 
 .post-container {
     margin-top: 20px;
+}
+
+.banner {
+    background-color: #f9f9f9;
+    padding: 3rem;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.banner h2 {
+    font-size: 2.4rem;
 }

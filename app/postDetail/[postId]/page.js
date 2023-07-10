@@ -19,7 +19,10 @@ const PostDetail = ({ params }) => {
     useEffect(() => {
         const increaseViewCount = async () => {
             try {
-                await axios.post(`http://localhost:3001/post/${postId}/increaseViewCount`);
+                const timestamp = new Date();
+                const response = await axios.post(`http://localhost:3001/post/${postId}/increaseViewCount`, {
+                    timestamp,
+                });
             } catch (error) {
                 console.log('Error increasing view count:', error);
             }
@@ -47,6 +50,8 @@ const PostDetail = ({ params }) => {
     if (!post) {
         return <div>Loading...</div>;
     }
+
+    console.log(post)
 
     return (
         <div>
@@ -105,7 +110,59 @@ const PostDetail = ({ params }) => {
                                     <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
                                 </div>
                             </div>
-                            <div className='col-lg-4'></div>
+                            <div className='col-lg-4'>
+                                {post.relatedPosts && (
+                                    <div className='col'>
+                                        <div className='related-posts'>
+                                            <h4>Related Posts</h4>
+                                            <ul>
+                                                {post.relatedPosts.map((relatedPost) => {
+                                                    if (relatedPost._id === post._id) {
+                                                        return null;
+                                                    }
+
+                                                    return (
+                                                        <div className="related-post-container" key={relatedPost._id}>
+                                                            <div className="related-post-cover">
+                                                                <a href={`/postDetail/${relatedPost._id}`}>
+                                                                    <span><img src={relatedPost.cover} /></span>
+                                                                </a>
+                                                            </div>
+                                                            <div className="related-post-menu">
+                                                                <div className="related-postCat-group">
+                                                                    <a className="related-post-cat cat-btn text-white" href={`/postByMenu/${relatedPost.menu_item_id}`}>
+                                                                        {relatedPost.menu}
+                                                                    </a>
+                                                                </div>
+                                                                <div className="related-post-title">
+                                                                    <h3 className="related-post-title">
+                                                                        <a href={`/postDetail/${relatedPost._id}`}>{relatedPost.title}</a>
+                                                                    </h3>
+                                                                </div>
+                                                                <div className="related-post-metas">
+                                                                    <ul className="list-inline d-flex justify-content-center">
+                                                                        <li>By {relatedPost.author}</li>
+                                                                        <li>
+                                                                            <i className="dot">.</i>
+                                                                            <FontAwesomeIcon icon={faEye} /> {relatedPost.viewCount} Views
+                                                                        </li>
+                                                                        <li>
+                                                                            <i className="dot">.</i>
+                                                                            {relatedPost.published_at}
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                )}
+
+                            </div>
                         </div>
                     </div>
                 </div>

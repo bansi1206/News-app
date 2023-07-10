@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import AdminHeader from '@/app/components/Admin-header';
 import Sidebar from '@/app/components/Sidebar';
 import AdminAccessDenied from '@/app/components/Admin-access-denied';
+import { useRouter } from 'next/navigation';
 
 const MenuItemEdit = ({ params }) => {
     const { menuItemId } = params;
@@ -15,6 +16,7 @@ const MenuItemEdit = ({ params }) => {
     const [menu, setMenu] = useState([]);
     const [user, setUser] = useState(null);
     const [isLoading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchUserData = async () => {
