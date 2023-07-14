@@ -108,19 +108,19 @@ const Contact = () => {
                                         <div className="zero-contact-info">
                                             <address className="address">
                                                 <p>
-                                                    Theodore Lowe, Ap #867-859 <br />Sit Rd, Azusa New York
+                                                    18 Hoang Quoc Viet, Nghia Do <br /> Cau Giay, Ha Noi
                                                 </p>
                                                 <div><h5>We're Available 24/ 7. Call Now.</h5></div>
                                                 <div>
                                                     <a href="#" className="social-icon phone">
                                                         <FontAwesomeIcon icon={faPhone} className="icon" />
-                                                        <span>(888) 456-2790</span>
+                                                        <span>(+84) 456-2790</span>
                                                     </a>
                                                 </div>
                                                 <div>
                                                     <a href="#" className="social-icon fax">
                                                         <FontAwesomeIcon icon={faFax} className="icon" />
-                                                        <span>(121) 255-53333</span>
+                                                        <span>(+84) 255-53333</span>
                                                     </a>
                                                 </div>
                                             </address>
