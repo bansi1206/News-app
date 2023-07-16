@@ -61,9 +61,9 @@ const Post = () => {
                 </div>
             </div>
             <div className="container">
-                <div className='row d-flex flex-row p-2 justify-content-center'>
+                <div className='row d-flex flex-row flex-wrap p-2 justify-content-center flex-grow-1'>
                     {currentPosts.map((post) => (
-                        <div className="post-container col-6" key={post._id}>
+                        <div className="post-container col-lg-6 col-sm-12" key={post._id}>
                             <figure className='fig-container'>
                                 <a href={`/postDetail/${post._id}`}>
                                     <span>
@@ -105,9 +105,9 @@ const Post = () => {
                 </div>
             </div>
             <div className="container">
-                <div className='row d-flex flex-row p-2 justify-content-center'>
+                <div className='row d-flex flex-row flex-wrap p-2 justify-content-center'>
                     {topPosts.map((post) => (
-                        <div className="post-container col-6" key={post._id}>
+                        <div className="post-container col-lg-6 col-sm-12" key={post._id}>
                             <figure className='fig-container'>
                                 <a href={`/postDetail/${post._id}`}>
                                     <span>
