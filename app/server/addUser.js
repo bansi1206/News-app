@@ -1,4 +1,5 @@
 const { client } = require('./db');
+const bcrypt = require('bcrypt');
 
 async function addUser(username, email, password, avatar, role) {
     try {
@@ -7,11 +8,12 @@ async function addUser(username, email, password, avatar, role) {
 
         const db = client.db('News');
         const userCollection = db.collection('user');
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = {
             username,
             email,
-            password,
+            password: hashedPassword,
             role,
             avatar,
         };

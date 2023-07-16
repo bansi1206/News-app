@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 const { client } = require('./db');
-
+const bcrypt = require('bcrypt');
 
 async function updateProfile(userId, password, avatarPath) {
     try {
@@ -13,7 +13,9 @@ async function updateProfile(userId, password, avatarPath) {
         const updateFields = {};
 
         if (password !== '') {
-            updateFields.password = password;
+            // Mã hóa mật khẩu mới bằng bcrypt
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updateFields.password = hashedPassword;
         }
 
         if (avatarPath !== '') {
