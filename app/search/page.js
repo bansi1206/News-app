@@ -64,58 +64,56 @@ const SearchPosts = () => {
     return (
         <div className="search-page">
             <Header />
-            <div className="container">
-                <div className="search-container">
-                    <div className='breadcrumb-wrapper'>
-                        <div className='container'>
-                            <nav aria-label='breadcrumb'>
-                                <ol className='breadcrumb d-flex align-items-center mt-4'>
-                                    <li><a href='/'>Home</a></li>
-                                    <li><span className='dash'>/</span><span className='menu-name'>You searched for {keyword}</span><span className='dash'></span></li>
-                                </ol>
-                            </nav>
-                        </div>
+            <div className="search-container">
+                <div className='breadcrumb-wrapper'>
+                    <div className='container'>
+                        <nav aria-label='breadcrumb'>
+                            <ol className='breadcrumb d-flex align-items-center mt-4'>
+                                <li><a href='/'>Home</a></li>
+                                <li><span className='dash'>/</span><span className='menu-name'>You searched for {keyword}</span><span className='dash'></span></li>
+                            </ol>
+                        </nav>
                     </div>
-                    <div className='banner'>
-                        <div className='container'>
-                            <div className='row align-items-center'>
-                                <div className='col-lg-12'>
-                                    <h2>Search results for "{keyword}"</h2>
-                                </div>
+                </div>
+                <div className='banner'>
+                    <div className='container'>
+                        <div className='row align-items-center'>
+                            <div className='col-lg-12'>
+                                <h2>Search results for "{keyword}"</h2>
                             </div>
                         </div>
                     </div>
-                    <div className='post-searched'>
-                        <div className='container'>
-                            <div className='row d-flex'>
-                                <div className='col-lg-8'>
-                                    <div className='row d-flex grid row-gap-3'>
-                                        {posts.length !== 0 ? (
-                                            posts.map((post) => (
-                                                <div className="post-container d-flex" key={post._id}>
-                                                    <div className='post-cover'>
-                                                        <a href={`/postDetail/${post._id}`}>
-                                                            <span>
-                                                                <img src={`${post.cover}`} />
-                                                            </span>
-                                                        </a>
+                </div>
+                <div className='post-searched'>
+                    <div className='container'>
+                        <div className='row d-flex'>
+                            <div className='col-lg-8'>
+                                <div className='row d-flex grid row-gap-3'>
+                                    {posts.length !== 0 ? (
+                                        posts.map((post) => (
+                                            <div className="post-container d-flex" key={post._id}>
+                                                <div className='post-cover'>
+                                                    <a href={`/postDetail/${post._id}`}>
+                                                        <span>
+                                                            <img src={`${post.cover}`} />
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <div className='post-menu ms-2'>
+                                                    <div className='postCat-group'>
+                                                        <a className='post-cat cat-btn text-white' href={`/postByMenu/${post.menu_item_id}`}>{post.menu}</a>
                                                     </div>
-                                                    <div className='post-menu ms-2'>
-                                                        <div className='postCat-group'>
-                                                            <a className='post-cat cat-btn text-white' href={`/postByMenu/${post.menu_item_id}`}>{post.menu}</a>
-                                                        </div>
-                                                        <div className='post-title'>
-                                                            <h3 className='post-title'><a href={`/postDetail/${post._id}`}>{post.title}</a></h3>
-                                                        </div>
-                                                        <div className='post-metas'>
-                                                            <p className='post-author'>By {post.author}</p>
-                                                        </div>
+                                                    <div className='post-title'>
+                                                        <h3 className='post-title'><a href={`/postDetail/${post._id}`}>{post.title}</a></h3>
+                                                    </div>
+                                                    <div className='post-metas'>
+                                                        <p className='post-author'>By {post.author}</p>
                                                     </div>
                                                 </div>
-                                            ))
-                                        ) : (<div>No posts found</div>)
-                                        }
-                                    </div>
+                                            </div>
+                                        ))
+                                    ) : (<div>No posts found</div>)
+                                    }
                                 </div>
                             </div>
                         </div>
