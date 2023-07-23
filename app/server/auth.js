@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 async function authenticate(username, password) {
     try {
-        // Kết nối tới cơ sở dữ liệu MongoDB
+
         await client.connect();
         console.log('Connected to MongoDB');
 

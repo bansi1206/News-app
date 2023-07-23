@@ -7,6 +7,8 @@ import AdminAccessDenied from '@/app/components/Admin-access-denied';
 import '../../styles/admin-account.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const UserTable = () => {
@@ -58,7 +60,16 @@ const UserTable = () => {
     const handleDeleteUser = async (userId) => {
         try {
             await axios.delete(`http://localhost:3001/deleteUser/${userId}`);
-            console.log('User deleted successfully');
+            toast.success('User deleted successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
             setUsers(users.filter((user) => user._id !== userId));
         } catch (error) {
             console.log('Error deleting user:', error);
@@ -92,6 +103,19 @@ const UserTable = () => {
             {!isLoading ? (
                 <>
                     <AdminHeader />
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                    />
+                    <ToastContainer />
                     <div className="d-flex">
                         <Sidebar />
                         {user.role === 'admin' ? (

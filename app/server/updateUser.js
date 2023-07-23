@@ -7,11 +7,11 @@ async function updateUser(userId, userData) {
         await client.connect();
         console.log('Connected to MongoDB');
 
-        const db = client.db('News'); // Thay đổi tên database của bạn
-        const userCollection = db.collection('user'); // Thay đổi tên collection cho bảng users của bạn
+        const db = client.db('News');
+        const userCollection = db.collection('user');
 
         if (userData.password) {
-            // Mã hóa mật khẩu mới bằng bcrypt
+
             const hashedPassword = await bcrypt.hash(userData.password, 10);
             userData.password = hashedPassword;
         }

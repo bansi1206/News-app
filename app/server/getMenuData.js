@@ -5,17 +5,17 @@ async function getMenuData() {
         await client.connect();
         console.log('Connected to MongoDB');
 
-        const db = client.db('News'); // Thay đổi tên database của bạn
-        const menuCollection = db.collection('menu'); // Thay đổi tên collection cho bảng menu của bạn
-        const menuItemCollection = db.collection('menu item'); // Thay đổi tên collection cho bảng menu item của bạn
+        const db = client.db('News');
+        const menuCollection = db.collection('menu');
+        const menuItemCollection = db.collection('menu item');
 
-        // Lấy dữ liệu từ bảng menu
+
         const menuData = await menuCollection.find().toArray();
 
-        // Lấy dữ liệu từ bảng menu item
+
         const menuItemData = await menuItemCollection.find().toArray();
 
-        // Kết nối dữ liệu menu và menu item theo trường menu_id
+
         const menuMap = new Map();
 
         menuData.forEach(menu => {
@@ -31,7 +31,7 @@ async function getMenuData() {
             }
         });
 
-        // Trả về dữ liệu menu và menu item đã được kết nối
+
         return [...menuMap.values()];
     } catch (error) {
         console.log('Error fetching menu data:', error);

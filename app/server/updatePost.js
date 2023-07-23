@@ -19,7 +19,7 @@ async function updatePost(postId, title, content, published_at, menu_id, menu_it
             status,
         };
 
-        // Kiểm tra xem coverPath có khác chuỗi rỗng hay không
+
         if (coverPath !== '') {
             updatedFields.cover = coverPath;
         }

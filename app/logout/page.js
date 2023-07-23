@@ -8,26 +8,25 @@ const Logout = () => {
 
     useEffect(() => {
         const logout = async () => {
-            // Xóa user_id từ localStorage
             localStorage.removeItem('user_id');
 
             const interval = setInterval(() => {
                 setCounter((prevCounter) => prevCounter - 1);
             }, 1000);
 
-            // Delay for 5 seconds
+
             await new Promise((resolve) => setTimeout(resolve, 5000));
 
             clearInterval(interval);
 
-            // Chuyển hướng đến trang login sau khi logout
+
             router.push('/login');
         };
 
         logout();
     }, []);
 
-    return <div>Logout Successful. Redirecting in {counter} seconds...</div>;
+    return <div>Logout Successful! Redirecting in {counter} seconds... or click <a href='/login'>here</a> to redirect to login page</div>;
 };
 
 export default Logout;

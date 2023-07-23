@@ -10,6 +10,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 import AdminAccessDenied from '@/app/components/Admin-access-denied';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Post = () => {
     const [posts, setPosts] = useState([]);
@@ -22,22 +24,20 @@ const Post = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            // Lấy user_id từ localStorage
             const userId = localStorage.getItem('user_id');
 
-            // Kiểm tra nếu user_id tồn tại
+
             if (userId) {
                 try {
-                    // Gọi API endpoint để lấy thông tin người dùng từ server
                     const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
                     setUser(response.data);
                     setLoading(false);
                 } catch (error) {
                     console.log('Error fetching user:', error);
-                    router.push('/admin/login'); // Chuyển hướng đến trang login khi có lỗi
+                    router.push('/admin/login');
                 }
             } else {
-                router.push('/admin/login'); // Chuyển hướng đến trang login nếu không có user_id
+                router.push('/admin/login');
             }
         };
 
@@ -62,7 +62,16 @@ const Post = () => {
         try {
             await axios.delete(`http://localhost:3001/post/${postId}`);
             setPosts(posts.filter(post => post._id !== postId));
-            console.log('Post deleted successfully');
+            toast.success('Post deleted successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         } catch (error) {
             console.log('Error deleting post:', error);
         }
@@ -79,7 +88,16 @@ const Post = () => {
                     return post;
                 })
             );
-            console.log('Post published successfully');
+            toast.success('Post published successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         } catch (error) {
             console.log('Error publishing post:', error);
         }
@@ -114,6 +132,19 @@ const Post = () => {
         <div>
             {!isLoading ? (<>
                 <AdminHeader />
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="dark"
+                />
+                <ToastContainer />
                 <div className="d-flex">
                     <Sidebar />
                     {user.role === 'admin' || user.role === 'writer' ? (

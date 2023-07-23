@@ -10,6 +10,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import AdminHeader from '@/app/components/Admin-header';
 import Sidebar from '@/app/components/Sidebar';
 import AdminAccessDenied from '@/app/components/Admin-access-denied';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UpdatePost = ({ params }) => {
     const [title, setTitle] = useState('');
@@ -124,7 +126,7 @@ const UpdatePost = ({ params }) => {
         formData.append('published_at', formattedDate);
         formData.append('menu_id', selectedMenu);
         formData.append('menu_item_id', selectedMenuItem);
-        formData.append('author', user.username); // Sử dụng dữ liệu tác giả từ post ban đầu
+        formData.append('author', user.username);
         formData.append('status', 'pending');
 
         const file = acceptedFiles[0];
@@ -146,15 +148,22 @@ const UpdatePost = ({ params }) => {
                 body: formData,
             });
             if (response.ok) {
-                console.log('Post updated successfully');
-                // Xử lý thành công, có thể thực hiện các hành động tiếp theo sau khi gửi thành công dữ liệu
+                toast.success('Post updated and put under review!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             } else {
                 console.log('Error updating post');
-                // Xử lý lỗi khi gửi yêu cầu không thành công
+
             }
         } catch (error) {
             console.log('Error updating post:', error);
-            // Xử lý lỗi khi có lỗi kết nối hoặc yêu cầu không thể được gửi
         }
     };
 
@@ -180,6 +189,19 @@ const UpdatePost = ({ params }) => {
             {!isLoading ? (
                 <>
                     <AdminHeader />
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                    />
+                    <ToastContainer />
                     <div className='d-flex'>
                         <Sidebar />
                         {user.role === 'admin' || user.role === 'writer' ? (

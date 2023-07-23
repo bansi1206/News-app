@@ -5,6 +5,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/login.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -22,8 +24,6 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-
-        // Gửi dữ liệu đăng nhập đến backend (server.js)
         const response = await fetch('http://localhost:3001/login', {
             method: 'POST',
             headers: {
@@ -32,22 +32,34 @@ const Login = () => {
             body: JSON.stringify({ username, password }),
         });
 
-        // Xử lý kết quả từ backend
         const data = await response.json();
         console.log('Response from backend:', data);
-
-        // Kiểm tra kết quả xác thực từ backend
         if (response.ok) {
-            // Xử lý khi đăng nhập thành công
+            toast.success(`Login Successfully!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
             const { id, username } = data;
             console.log('User ID:', id);
-
-            // Lưu trữ ID người dùng trong localStorage
             localStorage.setItem('user_id', id);
             router.push('/');
         } else {
-            // Xử lý khi đăng nhập thất bại
-            console.log('Đăng nhập thất bại!');
+            toast.error(`${data.message}!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     }
 
@@ -55,6 +67,19 @@ const Login = () => {
     return (
         <div>
             <Header />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+            <ToastContainer />
             <div className='login-container'>
                 <div className='breadcrumb-wrapper'>
                     <div className='container'>

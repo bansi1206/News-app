@@ -7,6 +7,8 @@ import Footer from '../components/Footer';
 import axios from 'axios';
 import '../styles/profile.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Profile = () => {
@@ -26,21 +28,19 @@ const Profile = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            // Lấy user_id từ localStorage
             const userId = localStorage.getItem('user_id');
 
-            // Kiểm tra nếu user_id tồn tại
+
             if (userId) {
                 try {
-                    // Gọi API endpoint để lấy thông tin người dùng từ server
                     const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
                     setUser(response.data);
                 } catch (error) {
                     console.log('Error fetching user:', error);
-                    router.push('/login'); // Chuyển hướng đến trang login khi có lỗi
+                    router.push('/login');
                 }
             } else {
-                router.push('/login'); // Chuyển hướng đến trang login nếu không có user_id
+                router.push('/login');
             }
         };
         fetchUserData();
@@ -75,26 +75,55 @@ const Profile = () => {
             console.log(formData);
 
             if (response.status === 200) {
-                // Xử lý khi đăng ký thành công
-                console.log('Cập nhật thành công!');
+                toast.success(`Profile Updated Successfully!`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 console.log(response.data);
 
             } else if (response.status === 201) {
                 console.log(response.data.error);
             }
             else {
-                console.log('Cập nhật thất bại')
+                toast.error(`Updated Failed!`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         } catch (error) {
-            console.error('Lỗi:', error);
+            console.error('Error:', error);
         }
     };
 
     if (user) {
-        // Hiển thị thông tin người dùng nếu đã lấy thành công
         return (
             <div>
                 <Header />
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="dark"
+                />
+                <ToastContainer />
                 <div className='profile-form-container'>
                     <div className='breadcrumb-wrapper'>
                         <div className='container'>
@@ -168,7 +197,6 @@ const Profile = () => {
             </div>
         );
     } else {
-        // Hiển thị thông báo khi chưa lấy được thông tin người dùng
         return <div>Loading user information...</div>;
     }
 

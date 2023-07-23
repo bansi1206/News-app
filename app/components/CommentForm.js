@@ -24,7 +24,7 @@ const CommentForm = ({ postId, onCommentSubmit, userAvatar }) => {
                 created_at: formattedDate,
                 parent_id: null
             };
-            onCommentSubmit(newComment); // Gọi hàm callback để thông báo comment mới
+            onCommentSubmit(newComment);
             setText('');
         }
     };

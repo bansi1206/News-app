@@ -32,8 +32,6 @@ const { getViews } = require('./getViews')
 const multer = require('multer');
 
 
-// Sử dụng middleware cors
-
 const app = express();
 
 app.use(express.json());
@@ -84,7 +82,7 @@ app.use('/image', express.static('public/image'));
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../../public/image/'); // Thay đổi đường dẫn tới thư mục avatar
+        cb(null, '../../public/image/');
     },
     filename: function (req, file, cb) {
         const fileName = file.originalname;
@@ -92,12 +90,12 @@ const storage = multer.diskStorage({
     }
 });
 
-// Khởi tạo multer với storage
+
 const upload = multer({ storage: storage });
 
 app.post('/register', upload.single('avatar'), async (req, res) => {
     const { username, password, email, role } = req.body;
-    const avatarPath = req.file ? req.file.path.replace(/\\/g, '/').replace('public/', '').replace('../../', '/') : '/image/default.png'; // Lấy đường dẫn tới file ảnh
+    const avatarPath = req.file ? req.file.path.replace(/\\/g, '/').replace('public/', '').replace('../../', '/') : '/image/default.png';
 
     try {
         const validateResult = await checkValidate(username, email);
@@ -122,23 +120,23 @@ app.put('/api/updateProfile/:id', upload.single('avatar'), async (req, res) => {
     const { newPassword } = req.body;
     let avatarPath = '';
 
-    // Kiểm tra xem người dùng đã tải lên avatar mới hay chưa
+
     if (req.file) {
-        avatarPath = `/image/${req.file.filename}`; // Đường dẫn avatar mới
+        avatarPath = `/image/${req.file.filename}`;
     }
 
     try {
-        // Tìm người dùng trong cơ sở dữ liệu
+
         const user = await getUserById(id);
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Kiểm tra xem có sự thay đổi thông tin người dùng hay không
+
         const hasChanges = newPassword !== '' || avatarPath !== '';
 
         if (hasChanges) {
-            // Có sự thay đổi, cập nhật thông tin người dùng
+
             await updateProfile(id, newPassword, avatarPath);
         }
 
@@ -467,7 +465,6 @@ app.get("/searchPosts", async (req, res) => {
         const posts = await getPosts();
         let filteredPosts = posts;
 
-        // Tìm kiếm theo tên
         if (searchValue) {
             const searchTerm = searchValue.toLowerCase();
             filteredPosts = filteredPosts.filter(
@@ -476,7 +473,6 @@ app.get("/searchPosts", async (req, res) => {
             );
         }
 
-        // Lọc theo menu đã chọn
         if (selectedMenus && selectedMenus.length > 0) {
             filteredPosts = filteredPosts.filter((post) => {
                 return selectedMenus.includes(post.menu_id) || selectedMenus.includes(post.menu_item_id);
@@ -506,7 +502,6 @@ app.post('/comments', async (req, res) => {
     const { postId, content, user_id, parentId, created_at } = req.body;
 
     try {
-        // Gọi hàm addComment để thêm comment vào cơ sở dữ liệu
         const newComment = await addComment(postId, content, user_id, parentId, created_at);
 
         res.status(201).json(newComment);

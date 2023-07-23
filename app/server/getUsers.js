@@ -5,13 +5,13 @@ async function getUsers() {
         await client.connect();
         console.log('Connected to MongoDB');
 
-        const db = client.db('News'); // Thay đổi tên database của bạn
-        const usersCollection = db.collection('user'); // Thay đổi tên collection cho bảng menu của bạn
+        const db = client.db('News');
+        const usersCollection = db.collection('user');
 
-        // Lấy dữ liệu từ bảng menu
+
         const users = await usersCollection.find().toArray();
 
-        // Trả về dữ liệu menu
+
         return users;
     } catch (error) {
         console.log('Error fetching menu data:', error);

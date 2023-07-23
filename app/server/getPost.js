@@ -6,14 +6,14 @@ async function getPosts() {
         await client.connect();
         console.log('Connected to MongoDB');
 
-        const db = client.db('News'); // Thay đổi tên database của bạn
-        const postCollection = db.collection('post'); // Thay đổi tên collection của bạn
-        const menuItemCollection = db.collection('menu item'); // Thay đổi tên collection của bạn
+        const db = client.db('News');
+        const postCollection = db.collection('post');
+        const menuItemCollection = db.collection('menu item');
         const commentCollection = db.collection('comment');
 
         const posts = await postCollection.find().toArray();
 
-        // Lấy thông tin menu item và gắn vào từng bài viết
+
         for (const post of posts) {
             const menuItem = await menuItemCollection.findOne({ _id: new ObjectId(post.menu_item_id) });
             if (menuItem) {

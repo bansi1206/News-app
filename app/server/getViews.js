@@ -3,7 +3,6 @@ const { ObjectId } = require('mongodb');
 
 async function getViews() {
     try {
-        // Kết nối tới cơ sở dữ liệu MongoDB
         await client.connect();
         console.log('Connected to MongoDB');
 

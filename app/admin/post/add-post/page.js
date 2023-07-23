@@ -10,6 +10,8 @@ import AdminAccessDenied from '@/app/components/Admin-access-denied';
 import dynamic from 'next/dynamic';
 import '../../../styles/admin-add-post.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PostForm = () => {
     const [title, setTitle] = useState('');
@@ -41,22 +43,19 @@ const PostForm = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            // Lấy user_id từ localStorage
             const userId = localStorage.getItem('user_id');
 
-            // Kiểm tra nếu user_id tồn tại
             if (userId) {
                 try {
-                    // Gọi API endpoint để lấy thông tin người dùng từ server
                     const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
                     setUser(response.data);
                     setLoading(false);
                 } catch (error) {
                     console.log('Error fetching user:', error);
-                    router.push('/admin/login'); // Chuyển hướng đến trang login khi có lỗi
+                    router.push('/admin/login');
                 }
             } else {
-                router.push('/admin/login'); // Chuyển hướng đến trang login nếu không có user_id
+                router.push('/admin/login');
             }
         };
 
@@ -134,15 +133,21 @@ const PostForm = () => {
                 body: formData,
             });
             if (response.ok) {
-                console.log('Data saved successfully');
-                // Xử lý thành công, có thể thực hiện các hành động tiếp theo sau khi gửi thành công dữ liệu
+                toast.success('Post added and put under review!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             } else {
                 console.log('Error saving data');
-                // Xử lý lỗi khi gửi yêu cầu không thành công
             }
         } catch (error) {
             console.log('Error saving data:', error);
-            // Xử lý lỗi khi có lỗi kết nối hoặc yêu cầu không thể được gửi
         }
 
     };
@@ -166,6 +171,19 @@ const PostForm = () => {
         <div>
             {!isLoading ? (<>
                 <AdminHeader />
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="dark"
+                />
+                <ToastContainer />
                 <div className='d-flex'>
                     <Sidebar />
                     {user.role === 'admin' || user.role === 'writer' ? (

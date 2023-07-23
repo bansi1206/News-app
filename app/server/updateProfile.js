@@ -13,7 +13,6 @@ async function updateProfile(userId, password, avatarPath) {
         const updateFields = {};
 
         if (password !== '') {
-            // Mã hóa mật khẩu mới bằng bcrypt
             const hashedPassword = await bcrypt.hash(password, 10);
             updateFields.password = hashedPassword;
         }

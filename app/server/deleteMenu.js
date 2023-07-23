@@ -6,13 +6,13 @@ async function deleteMenu(menuId) {
         await client.connect();
         console.log('Connected to MongoDB');
 
-        const db = client.db('News'); // Replace with your database name
-        const menuCollection = db.collection('menu'); // Replace with your menu collection name
+        const db = client.db('News');
+        const menuCollection = db.collection('menu');
 
-        // Delete the menu by ID
+
         const result = await menuCollection.deleteOne({ _id: new ObjectId(menuId) });
 
-        // Check if the deletion was successful
+
         if (result.deletedCount === 1) {
             console.log('Menu deleted successfully');
         } else {
@@ -29,13 +29,13 @@ async function deleteMenuItem(menuItemId) {
         await client.connect();
         console.log('Connected to MongoDB');
 
-        const db = client.db('News'); // Replace with your database name
-        const menuItemCollection = db.collection('menu item'); // Replace with your menu item collection name
+        const db = client.db('News');
+        const menuItemCollection = db.collection('menu item');
 
-        // Delete the menu item by ID
+
         const result = await menuItemCollection.deleteOne({ _id: new ObjectId(menuItemId) });
 
-        // Check if the deletion was successful
+
         if (result.deletedCount === 1) {
             console.log('Menu item deleted successfully');
         } else {

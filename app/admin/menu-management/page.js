@@ -8,6 +8,8 @@ import AdminAccessDenied from '@/app/components/Admin-access-denied';
 import '../../styles/admin-menu.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MenuTable = () => {
     const [menu, setMenu] = useState([]);
@@ -22,22 +24,20 @@ const MenuTable = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            // Lấy user_id từ localStorage
             const userId = localStorage.getItem('user_id');
 
-            // Kiểm tra nếu user_id tồn tại
+
             if (userId) {
                 try {
-                    // Gọi API endpoint để lấy thông tin người dùng từ server
                     const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
                     setUser(response.data);
                     setLoading(false);
                 } catch (error) {
                     console.log('Error fetching user:', error);
-                    router.push('/admin/login'); // Chuyển hướng đến trang login khi có lỗi
+                    router.push('/admin/login');
                 }
             } else {
-                router.push('/admin/login'); // Chuyển hướng đến trang login nếu không có user_id
+                router.push('/admin/login');
             }
         };
 
@@ -113,9 +113,18 @@ const MenuTable = () => {
     const handleDeleteMenu = async (menuId) => {
         try {
             await axios.delete(`http://localhost:3001/deleteMenu/${menuId}`);
-            // TODO: Handle success delete
-            console.log('Menu deleted successfully');
-            // Update the menu state after deletion
+
+            toast.success('Menu deleted successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+
             setMenu(menu.filter((item) => item._id !== menuId));
         } catch (error) {
             console.log('Error deleting menu:', error);
@@ -124,16 +133,21 @@ const MenuTable = () => {
 
     const handleDeleteMenuItem = async (menuItem) => {
         try {
-            // TODO: Handle delete menu item logic
             console.log('Delete menu item:', menuItem);
 
-            // Delete the menu item from the database
             await axios.delete(`http://localhost:3001/deleteMenuItem/${menuItem._id}`);
 
-            // Update the menuItem state by filtering out the deleted menu item
             setMenuItem((prevMenuItem) => prevMenuItem.filter((item) => item._id !== menuItem._id));
-
-            console.log('Menu item deleted successfully');
+            toast.success('Menu item deleted successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         } catch (error) {
             console.log('Error deleting menu item:', error);
         }
@@ -144,6 +158,19 @@ const MenuTable = () => {
         <div>
             {!isLoading ? (<>
                 <AdminHeader />
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="dark"
+                />
+                <ToastContainer />
                 <div className="d-flex">
                     <Sidebar />
                     {user.role === 'admin' ? (

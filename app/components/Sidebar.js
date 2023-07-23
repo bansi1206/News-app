@@ -10,10 +10,8 @@ const Sidebar = () => {
     const [activeLink, setActiveLink] = useState('dashboard');
 
     useEffect(() => {
-        // Lấy đường dẫn hiện tại từ đối tượng window
         const currentPath = window.location.pathname;
 
-        // Kiểm tra đường dẫn hiện tại và cập nhật giá trị activeLink tương ứng
         if (currentPath === '/admin') {
             setActiveLink('dashboard');
         } else if (currentPath === '/admin/account' || currentPath === '/admin/account/add-user' || currentPath.startsWith('/admin/account/update-user/')) {

@@ -7,6 +7,8 @@ import AdminAccessDenied from '@/app/components/Admin-access-denied';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/admin-add-user.css';
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserAddForm = () => {
     const [username, setUsername] = useState('');
@@ -47,11 +49,18 @@ const UserAddForm = () => {
                 email,
                 password,
                 role: role,
-                avatar: 'image/default.png' // Đường dẫn mặc định cho avatar
+                avatar: 'image/default.png'
             });
-
-            // TODO: Handle success add
-            console.log('User added successfully');
+            toast.success('User added successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
             setUsername('');
             setEmail('');
             setPassword('');
@@ -72,6 +81,19 @@ const UserAddForm = () => {
             {!isLoading ? (
                 <>
                     <AdminHeader />
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                    />
+                    <ToastContainer />
                     <div className='d-flex'>
                         <Sidebar />
                         {user.role === 'admin' ? (
@@ -126,6 +148,7 @@ const UserAddForm = () => {
                                                 <td>Role</td>
                                                 <td>
                                                     <select id="role" value={role} onChange={handleOption}>
+                                                        <option value="">Select a role</option>
                                                         <option value="user">User</option>
                                                         <option value="writer">Writer</option>
                                                         <option value="admin">Admin</option>

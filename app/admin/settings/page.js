@@ -22,22 +22,19 @@ const Settings = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            // Lấy user_id từ localStorage
             const userId = localStorage.getItem('user_id');
 
-            // Kiểm tra nếu user_id tồn tại
             if (userId) {
                 try {
-                    // Gọi API endpoint để lấy thông tin người dùng từ server
                     const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
                     setUser(response.data);
                     setLoading(false);
                 } catch (error) {
                     console.log('Error fetching user:', error);
-                    router.push('/admin/login'); // Chuyển hướng đến trang login khi có lỗi
+                    router.push('/admin/login');
                 }
             } else {
-                router.push('/admin/login'); // Chuyển hướng đến trang login nếu không có user_id
+                router.push('/admin/login');
             }
         };
 

@@ -7,6 +7,8 @@ import Footer from '../components/Footer';
 import '../styles/signup.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -36,7 +38,6 @@ const Register = () => {
 
     const handleRegisterIfInvalid = async (e) => {
         e.preventDefault();
-        console.log('Có gì đó sai sai')
     }
 
 
@@ -57,7 +58,16 @@ const Register = () => {
             if (acceptedImageTypes.includes(file.type)) {
                 newUser.append('avatar', file);
             } else {
-                console.log('Vui lòng chỉ tải lên các tệp ảnh (jpg, png, gif)');
+                toast.error('Invalid Image Format!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 return;
             }
         }
@@ -72,26 +82,61 @@ const Register = () => {
             console.log(newUser);
 
             if (response.status === 200) {
-                // Xử lý khi đăng ký thành công
-                console.log('Đăng ký thành công!');
+                toast.success('Register Successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
                 console.log(response.data);
 
                 router.push('/login');
             } else if (response.status === 201) {
-                console.log(response.data.error);
+                toast.error(`${response.data.error}!`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
             else {
-                console.log('Đăng ký thất bại')
+                toast.error('Register Failed!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         } catch (error) {
-            console.error('Lỗi:', error);
+            console.error('Error:', error);
         }
     }
 
     const handleRegister = async (e) => {
         e.preventDefault();
         if (!isValidEmail(email)) {
-            console.log('Email không hợp lệ')
+            toast.error(`Invalid Email!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
             handleRegisterIfInvalid(e)
         } else {
             handleRegisterIfValid(e)
@@ -101,6 +146,19 @@ const Register = () => {
     return (
         <div>
             <Header />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+            <ToastContainer />
             <div className='signup-form-section'>
                 <div className='breadcrumb-wrapper'>
                     <div className='container'>

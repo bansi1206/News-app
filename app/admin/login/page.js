@@ -2,7 +2,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../styles/admin-login.css'
+import '../../styles/admin-login.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -12,7 +14,6 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        // Gửi dữ liệu đăng nhập đến backend
         const response = await fetch('http://localhost:3001/login', {
             method: 'POST',
             headers: {
@@ -21,11 +22,9 @@ const Login = () => {
             body: JSON.stringify({ username, password }),
         });
 
-        // Xử lý kết quả từ backend
         const data = await response.json();
-        console.log('Response from backend:', data);
 
-        // Kiểm tra kết quả xác thực từ backend
+
         if (response.ok) {
 
             const { id, username, role } = data;
@@ -33,20 +32,50 @@ const Login = () => {
             console.log(data)
 
             if (role === 'admin' || role === 'writer') {
-                // Lưu trữ ID người dùng vào localStorage
                 localStorage.setItem('user_id', id);
                 router.push('/admin')
 
             } else {
-                console.log('Access denied');
+                toast.error('Access Denied!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         } else {
-            console.log('Đăng nhập thất bại!');
+            toast.error(`${data.message}!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
         }
     };
 
     return (
         <div>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+            <ToastContainer />
             <div className='login-form-container'>
                 <div className='container'>
                     <img src='/vercel.svg' />
