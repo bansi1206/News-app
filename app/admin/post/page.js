@@ -20,12 +20,11 @@ const Post = () => {
     const router = useRouter();
     const [user, setUser] = useState(null);
     const [isLoading, setLoading] = useState(true);
-
+    const [searchKeyword, setSearchKeyword] = useState('');
 
     useEffect(() => {
         const fetchUserData = async () => {
             const userId = localStorage.getItem('user_id');
-
 
             if (userId) {
                 try {
@@ -103,15 +102,23 @@ const Post = () => {
         }
     };
 
+    const handleSearchChange = (e) => {
+        setSearchKeyword(e.target.value);
+        setCurrentPage(1);
+    };
 
     if (posts.length === 0) {
         return <div>Loading...</div>;
     }
 
+    const filteredPosts = posts.filter((post) =>
+        post.title.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-    const totalPages = Math.ceil(posts.length / postsPerPage);
+    const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+    const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -130,88 +137,100 @@ const Post = () => {
 
     return (
         <div>
-            {!isLoading ? (<>
-                <AdminHeader />
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="dark"
-                />
-                <ToastContainer />
-                <div className="d-flex">
-                    <Sidebar />
-                    {user.role === 'admin' || user.role === 'writer' ? (
-                        <div className='post-content-container'>
-                            <div className='header-container d-flex'>
-                                <h4>Posts</h4>
-                                <a className='add-new-post' href='/admin/post/add-post'>Add New</a>
-                            </div>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Title</th>
-                                            <th>Category</th>
-                                            <th>Published Date</th>
-                                            <th>Author</th>
-                                            <th><FontAwesomeIcon icon={faMessage} /></th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {currentPosts.map((post) => (
-                                            <tr key={post._id}>
-                                                <td>
-                                                    <Link href={`/admin/post/update-post/${post._id}`}>
-                                                        {post.title}
-                                                    </Link>
-                                                </td>
-                                                <td>{post.menu}</td>
-                                                <td>{post.published_at}</td>
-                                                <td>{post.author}</td>
-                                                <td>
-                                                    <div className="comment-icon-container">
-                                                        <FontAwesomeIcon className='icon-message' icon={faMessage} />
-                                                        <span className="comment-count">{post.commentCount}</span>
-                                                    </div>
-                                                </td>
-                                                <td><p className={post.status === 'published' ? 'published' : 'pending'}>{post.status}</p></td>
-                                                <td>
-                                                    <Link href={`/admin/post/update-post/${post._id}`}>
-                                                        <button className='btn btn-primary'>Edit</button>
-                                                    </Link>
-                                                    <button className='btn btn-danger' onClick={() => handleDeletePost(post._id)}>Delete</button>
-                                                    {!isLoading ? user.role === 'admin' && post.status === 'pending' && (
-                                                        <button className='btn btn-success' onClick={() => handlePublishPost(post._id)}>Publish</button>
-                                                    ) : (<div></div>)}
-                                                </td>
+            {!isLoading ? (
+                <>
+                    <AdminHeader />
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                    />
+                    <ToastContainer />
+                    <div className="d-flex">
+                        <Sidebar />
+                        {user.role === 'admin' || user.role === 'writer' ? (
+                            <div className='post-content-container'>
+                                <div className='header-container d-flex'>
+                                    <h4>Posts</h4>
+                                    <a className='add-new-post' href='/admin/post/add-post'>Add New</a>
+                                </div>
+                                <div className="search-container">
+                                    <input
+                                        type="text"
+                                        placeholder="Search by title"
+                                        value={searchKeyword}
+                                        onChange={handleSearchChange}
+                                        className='search-box'
+                                    />
+                                </div>
+                                <div className="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Category</th>
+                                                <th>Published Date</th>
+                                                <th>Author</th>
+                                                <th><FontAwesomeIcon icon={faMessage} /></th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                <div className="pagination d-flex justify-content-center">
-                                    <ul className='d-flex'>
-                                        {renderPageNumbers}
-                                    </ul>
+                                        </thead>
+                                        <tbody>
+                                            {currentPosts.map((post) => (
+                                                <tr key={post._id}>
+                                                    <td>
+                                                        <Link href={`/admin/post/update-post/${post._id}`}>
+                                                            {post.title}
+                                                        </Link>
+                                                    </td>
+                                                    <td>{post.menu}</td>
+                                                    <td>{post.published_at}</td>
+                                                    <td>{post.author}</td>
+                                                    <td>
+                                                        <div className="comment-icon-container">
+                                                            <FontAwesomeIcon className='icon-message' icon={faMessage} />
+                                                            <span className="comment-count">{post.commentCount}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td><p className={post.status === 'published' ? 'published' : 'pending'}>{post.status}</p></td>
+                                                    <td>
+                                                        <Link href={`/admin/post/update-post/${post._id}`}>
+                                                            <button className='btn btn-primary'>Edit</button>
+                                                        </Link>
+                                                        <button className='btn btn-danger' onClick={() => handleDeletePost(post._id)}>Delete</button>
+                                                        {!isLoading ? user.role === 'admin' && post.status === 'pending' && (
+                                                            <button className='btn btn-success' onClick={() => handlePublishPost(post._id)}>Publish</button>
+                                                        ) : (<div></div>)}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    <div className="pagination d-flex justify-content-center">
+                                        <ul className='d-flex'>
+                                            {renderPageNumbers}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ) : (<AdminAccessDenied />)}
-                </div>
-            </>) : (<></>)}
+                        ) : (<AdminAccessDenied />)}
+                    </div>
+                </>
+            ) : (<></>)}
         </div>
     );
 };
 
 export default Post;
+
 
 
 

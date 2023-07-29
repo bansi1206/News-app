@@ -10,13 +10,13 @@ import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const UserTable = () => {
     const [users, setUsers] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [usersPerPage] = useState(5);
     const [user, setUser] = useState([]);
+    const [searchKeyword, setSearchKeyword] = useState('');
     const router = useRouter();
 
     useEffect(() => {
@@ -25,7 +25,6 @@ const UserTable = () => {
 
             if (userId) {
                 try {
-
                     const response = await axios.get(`http://localhost:3001/api/user/${userId}`);
                     setUser(response.data);
                     setLoading(false);
@@ -40,8 +39,6 @@ const UserTable = () => {
 
         fetchUserData();
     }, []);
-
-
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -76,12 +73,18 @@ const UserTable = () => {
         }
     };
 
-
+    const handleSearchChange = (e) => {
+        setSearchKeyword(e.target.value);
+        setCurrentPage(1);
+    };
 
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
-    const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
-    const totalPages = Math.ceil(users.length / usersPerPage);
+    const filteredUsers = users.filter((user) =>
+        user.username.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+    const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+    const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -126,6 +129,15 @@ const UserTable = () => {
                                         Add New
                                     </a>
                                 </div>
+                                <div className="search-container">
+                                    <input
+                                        type="text"
+                                        placeholder="Search by username"
+                                        value={searchKeyword}
+                                        onChange={handleSearchChange}
+                                        className='search-box'
+                                    />
+                                </div>
                                 <div className="table-container">
                                     <table>
                                         <thead>
@@ -140,23 +152,15 @@ const UserTable = () => {
                                             {currentUsers.map((user) => (
                                                 <tr key={user._id}>
                                                     <td>
-                                                        <a href={`/admin/account/update-user/${user._id}`}>
-                                                            {user.username}
-                                                        </a>
+                                                        <a href={`/admin/account/update-user/${user._id}`}>{user.username}</a>
                                                     </td>
                                                     <td>{user.email}</td>
                                                     <td>{user.role}</td>
                                                     <td>
-                                                        <a
-                                                            className="btn btn-primary"
-                                                            href={`/admin/account/update-user/${user._id}`}
-                                                        >
+                                                        <a className="btn btn-primary" href={`/admin/account/update-user/${user._id}`}>
                                                             Edit
                                                         </a>
-                                                        <button
-                                                            className="btn btn-danger"
-                                                            onClick={() => handleDeleteUser(user._id)}
-                                                        >
+                                                        <button className="btn btn-danger" onClick={() => handleDeleteUser(user._id)}>
                                                             Delete
                                                         </button>
                                                     </td>
@@ -174,11 +178,11 @@ const UserTable = () => {
                         ) : (<AdminAccessDenied />)}
                     </div>
                 </>
-            ) : (<div></div>)}
+            ) : (
+                <div></div>
+            )}
         </div>
     );
 };
 
 export default UserTable;
-
-

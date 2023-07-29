@@ -18,6 +18,8 @@ const MenuTable = () => {
     const [currentMenuItemPage, setCurrentMenuItemPage] = useState(1);
     const [menuPerPage] = useState(5);
     const [menuItemPerPage] = useState(5);
+    const [searchMenuKeyword, setSearchMenuKeyword] = useState('');
+    const [searchMenuItemKeyword, setSearchMenuItemKeyword] = useState('');
     const router = useRouter();
     const [user, setUser] = useState(null);
     const [isLoading, setLoading] = useState(true);
@@ -25,7 +27,6 @@ const MenuTable = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             const userId = localStorage.getItem('user_id');
-
 
             if (userId) {
                 try {
@@ -67,17 +68,6 @@ const MenuTable = () => {
         fetchMenuItem();
     }, []);
 
-    const indexOfLastMenu = currentMenuPage * menuPerPage;
-    const indexOfFirstMenu = indexOfLastMenu - menuPerPage;
-    const currentMenu = menu.slice(indexOfFirstMenu, indexOfLastMenu);
-    const totalMenuPages = Math.ceil(menu.length / menuPerPage);
-
-
-    const indexOfLastMenuItem = currentMenuItemPage * menuItemPerPage;
-    const indexOfFirstMenuItem = indexOfLastMenuItem - menuItemPerPage;
-    const currentMenuItem = menuItem.slice(indexOfFirstMenuItem, indexOfLastMenuItem);
-    const totalMenuItemPages = Math.ceil(menuItem.length / menuItemPerPage);
-
     const handleMenuPageChange = (menuPageNumber) => {
         setCurrentMenuPage(menuPageNumber);
     };
@@ -85,6 +75,77 @@ const MenuTable = () => {
     const handleMenuItemPageChange = (menuItemPageNumber) => {
         setCurrentMenuItemPage(menuItemPageNumber);
     };
+
+    const handleDeleteMenu = async (menuId) => {
+        try {
+            await axios.delete(`http://localhost:3001/deleteMenu/${menuId}`);
+            toast.success('Menu deleted successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            setMenu(menu.filter((item) => item._id !== menuId));
+        } catch (error) {
+            console.log('Error deleting menu:', error);
+        }
+    };
+
+    const handleDeleteMenuItem = async (menuItem) => {
+        try {
+            console.log('Delete menu item:', menuItem);
+            await axios.delete(`http://localhost:3001/deleteMenuItem/${menuItem._id}`);
+            setMenuItem((prevMenuItem) => prevMenuItem.filter((item) => item._id !== menuItem._id));
+            toast.success('Menu item deleted successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        } catch (error) {
+            console.log('Error deleting menu item:', error);
+        }
+    };
+
+    const handleSearchMenuChange = (e) => {
+        setSearchMenuKeyword(e.target.value);
+        setCurrentMenuPage(1);
+    };
+
+    const handleSearchMenuItemChange = (e) => {
+        setSearchMenuItemKeyword(e.target.value);
+        setCurrentMenuItemPage(1);
+    };
+
+    if (menu.length === 0 || menuItem.length === 0) {
+        return <div>Loading...</div>;
+    }
+
+    const filteredMenu = menu.filter((menu) =>
+        menu.title.toLowerCase().includes(searchMenuKeyword.toLowerCase())
+    );
+
+    const filteredMenuItem = menuItem.filter((menuItem) =>
+        menuItem.title.toLowerCase().includes(searchMenuItemKeyword.toLowerCase())
+    );
+
+    const indexOfLastMenu = currentMenuPage * menuPerPage;
+    const indexOfFirstMenu = indexOfLastMenu - menuPerPage;
+    const currentMenu = filteredMenu.slice(indexOfFirstMenu, indexOfLastMenu);
+    const totalMenuPages = Math.ceil(filteredMenu.length / menuPerPage);
+
+    const indexOfLastMenuItem = currentMenuItemPage * menuItemPerPage;
+    const indexOfFirstMenuItem = indexOfLastMenuItem - menuItemPerPage;
+    const currentMenuItem = filteredMenuItem.slice(indexOfFirstMenuItem, indexOfLastMenuItem);
+    const totalMenuItemPages = Math.ceil(filteredMenuItem.length / menuItemPerPage);
 
     const renderMenuPageNumbers = [...Array(totalMenuPages).keys()].map((menuPageNumber) => (
         <li key={menuPageNumber} className={currentMenuPage === menuPageNumber + 1 ? 'page-active' : ''}>
@@ -108,140 +169,114 @@ const MenuTable = () => {
         </li>
     ));
 
-
-
-    const handleDeleteMenu = async (menuId) => {
-        try {
-            await axios.delete(`http://localhost:3001/deleteMenu/${menuId}`);
-
-            toast.success('Menu deleted successfully!', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-
-            setMenu(menu.filter((item) => item._id !== menuId));
-        } catch (error) {
-            console.log('Error deleting menu:', error);
-        }
-    };
-
-    const handleDeleteMenuItem = async (menuItem) => {
-        try {
-            console.log('Delete menu item:', menuItem);
-
-            await axios.delete(`http://localhost:3001/deleteMenuItem/${menuItem._id}`);
-
-            setMenuItem((prevMenuItem) => prevMenuItem.filter((item) => item._id !== menuItem._id));
-            toast.success('Menu item deleted successfully!', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        } catch (error) {
-            console.log('Error deleting menu item:', error);
-        }
-    };
-
-
     return (
         <div>
-            {!isLoading ? (<>
-                <AdminHeader />
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="dark"
-                />
-                <ToastContainer />
-                <div className="d-flex">
-                    <Sidebar />
-                    {user.role === 'admin' ? (
-                        <div className='menu-content-container'>
-                            <div className='header-container d-flex'>
-                                <h4>Menus</h4>
-                                <a className='add-new-post' href='/admin/menu-management/add-menu'>Add New</a>
-                            </div>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Menu Title</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {currentMenu.map((menu) => (
-                                            <tr key={menu._id}>
-                                                <td>
-                                                    <Link href={`/admin/menu-management/updte-menu/${menu._id}`}>{menu.title}</Link>
-                                                </td>
-                                                <td>
-                                                    <a className='btn btn-primary' href={`/admin/menu-management/update-menu/${menu._id}`}>Edit</a>
-                                                    <button className='btn btn-danger' onClick={() => handleDeleteMenu(menu._id)}>Delete</button>
-                                                </td>
+            {!isLoading ? (
+                <>
+                    <AdminHeader />
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                    />
+                    <ToastContainer />
+                    <div className="d-flex">
+                        <Sidebar />
+                        {user.role === 'admin' ? (
+                            <div className='menu-content-container'>
+                                <div className='header-container d-flex'>
+                                    <h4>Menus</h4>
+                                    <a className='add-new-post' href='/admin/menu-management/add-menu'>Add New</a>
+                                </div>
+                                <div className="search-container">
+                                    <input
+                                        type="text"
+                                        placeholder="Search by menu title"
+                                        value={searchMenuKeyword}
+                                        onChange={handleSearchMenuChange}
+
+                                    />
+                                </div>
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Menu Title</th>
+                                                <th>Actions</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                <div className="pagination d-flex justify-content-center">
-                                    <ul className='d-flex'>
-                                        {renderMenuPageNumbers}
-                                    </ul>
+                                        </thead>
+                                        <tbody>
+                                            {currentMenu.map((menu) => (
+                                                <tr key={menu._id}>
+                                                    <td>
+                                                        <Link href={`/admin/menu-management/updte-menu/${menu._id}`}>{menu.title}</Link>
+                                                    </td>
+                                                    <td>
+                                                        <a className='btn btn-primary' href={`/admin/menu-management/update-menu/${menu._id}`}>Edit</a>
+                                                        <button className='btn btn-danger' onClick={() => handleDeleteMenu(menu._id)}>Delete</button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    <div className="pagination d-flex justify-content-center">
+                                        <ul className='d-flex'>
+                                            {renderMenuPageNumbers}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className='header-container d-flex'>
+                                    <h4>Menu Items</h4>
+                                    <a className='add-new-post' href='/admin/menu-management/add-menuItem'>Add New</a>
+                                </div>
+                                <div className="search-container">
+                                    <input
+                                        type="text"
+                                        placeholder="Search by menu item title"
+                                        value={searchMenuItemKeyword}
+                                        onChange={handleSearchMenuItemChange}
+                                    />
+                                </div>
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Menu Item Title</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {currentMenuItem.map((menuItem) => (
+                                                <tr key={menuItem._id}>
+                                                    <td>
+                                                        <Link href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>{menuItem.title}</Link>
+                                                    </td>
+                                                    <td>
+                                                        <a className='btn btn-primary' href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>Edit</a>
+                                                        <button className='btn btn-danger' onClick={() => handleDeleteMenuItem(menuItem)}>Delete</button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    <div className="pagination d-flex justify-content-center">
+                                        <ul className='d-flex'>
+                                            {renderMenuItemPageNumbers}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                            <div className='header-container d-flex'>
-                                <h4>Menu Items</h4>
-                                <a className='add-new-post' href='/admin/menu-management/add-menuItem'>Add New</a>
-                            </div>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Menu Item Title</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {currentMenuItem.map((menuItem) => (
-                                            <tr key={menuItem._id}>
-                                                <td>
-                                                    <Link href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>{menuItem.title}</Link>
-                                                </td>
-                                                <td>
-                                                    <a className='btn btn-primary' href={`/admin/menu-management/update-menuItem/${menuItem._id}`}>Edit</a>
-                                                    <button className='btn btn-danger' onClick={() => handleDeleteMenuItem(menuItem)}>Delete</button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                <div className="pagination d-flex justify-content-center">
-                                    <ul className='d-flex'>
-                                        {renderMenuItemPageNumbers}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    ) : (<AdminAccessDenied />)}
-                </div></>) : (<></>)
+                        ) : (<AdminAccessDenied />)}
+                    </div>
+                </>
+            ) : (<></>)
             }
         </div>
     );
