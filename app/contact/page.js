@@ -7,6 +7,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFax, faPhone } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faTwitter, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
+import emailjs from 'emailjs-com';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Contact = () => {
     const [name, setName] = useState('');
@@ -17,9 +20,48 @@ const Contact = () => {
     const [isPhoneFocused, setPhoneFocused] = useState(false);
     const [isEmailFocused, setEmailFocused] = useState(false);
     const [isMessageFocused, setMessageFocused] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        emailjs.init('YCuFmSmGxfs_aGIzL');
+        emailjs.send('service_y6rkdxe', 'template_gvtf93q', {
+            from_name: name,
+            phone,
+            reply_to: email,
+            message,
+        })
+            .then((response) => {
+                toast.success('Email sent successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            })
+            .catch((error) => {
+                console.error('Error sending email:', error);
+            });
+    };
     return (
         <div>
             <Header />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+            <ToastContainer />
             <div className="contact-container">
                 <div className='breadcrumb-wrapper'>
                     <div className='container'>
@@ -61,7 +103,7 @@ const Contact = () => {
                                         <p>Your email address will not be published. All the fields are required.</p>
                                     </div>
                                     <div className="zero-contact-form-wrapper">
-                                        <form className="zero-form row no-gutters">
+                                        <form className="zero-form row no-gutters" onSubmit={handleSubmit}>
                                             <div className={`form-group col-12 ${isNameFocused || name ? 'focused' : ''}`}>
                                                 <label>Name</label>
                                                 <input type="text" name="contact-name" value={name}
